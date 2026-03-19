@@ -1,43 +1,37 @@
 # Hi there, I'm dull-bird 👋
 
-### 🚀 AI Engineer | Computer Vision & Edge Intelligence Specialist
-
-I am an engineer focused on bridging the gap between cutting-edge AI research and high-stakes physical world applications. I specialize in **Computer Vision Foundation Models** and **Extreme Model Acceleration** for edge devices.
+I'm an explorer bridging the digital and physical worlds. I enjoy building things that make sense of complex data, whether it's raw pixels, dense research papers, or deep debugging sessions.
 
 ---
 
-### 🛠️ Core Expertise
+### 🚀 Selected Repositories
 
-- **Computer Vision & 3D Perception:** End-to-end deployment of vision foundation models (DINOv2, Lingbot-Depth).
-- **Edge Model Optimization:** Expert in **TensorRT** and **ONNX** workflows. Successfully accelerated massive models by **20x~30x** (from 2 FPS to 58+ FPS) on NVIDIA Orin NX.
-- **AI Infrastructure:** Architecting automated AI research and knowledge management systems.
-- **Rapid Prototyping:** Leveraging AI to build functional engineering tools, including VS Code extensions.
+#### 🌌 [DeepOrbit](https://github.com/dull-bird/DeepOrbit)
+An AI-agent system that bridges LLMs with Obsidian to automate deep research and personal knowledge management. It helps me maintain a high-velocity learning loop by automating the capture and synthesis of information.
 
----
+#### 🛠️ [CV DebugMate C++](https://github.com/dull-bird/cv_debug_mate_cpp)
+A VS Code extension designed for computer vision engineers. It visualizes 1D/2D/3D data structures directly during C++ debugging sessions, turning abstract memory buffers into intuitive images and plots.
 
-### 🌟 Featured Project: DeepOrbit
+#### 📄 [PDF Table of Contents Generator](https://github.com/dull-bird/PDF-Table-of-Contents-Generator)
+A handy tool to automatically generate and inject clickable tables of contents into PDF documents. Perfect for long technical reports or reconstructed eBooks.
 
-**[DeepOrbit](https://github.com/dull-bird/DeepOrbit)** is my personalized AI knowledge infrastructure. 
-It automates the full lifecycle of information:
-- **Capture:** Automated mining of research papers and technical docs.
-- **Synthesis:** Multi-stage AI reasoning to generate structured summaries and insights.
-- **Orchestration:** Connecting atomic concepts into a dynamic, "orbiting" knowledge vault.
+#### 🤖 [drqn_mazeworld](https://github.com/dull-bird/drqn_mazeworld)
+A deep reinforcement learning project where a Deep Recurrent Q-Network (DRQN) learns to navigate and solve environments in MazeWorld.
 
 ---
 
-### 💻 Technical Stack
+### 💻 Finding the signal in the noise
 
-- **Languages:** Python, C++, Bash
-- **Frameworks/Tools:** PyTorch, OpenCV, TensorRT, ONNX, Git
-- **Deployment:** NVIDIA Jetson / Orin NX, Edge-to-Cloud Pipelines
-- **AI-Augmented Dev:** VS Code Plugin Development, AI Agent Toolchains
+My focus areas include:
+- **Computer Vision:** Making machines see and understand.
+- **Edge Intelligence:** Pushing heavy models to run fast on light hardware (TensorRT/ONNX).
+- **AI Tooling:** Using AI to build better tools for humans.
 
 ---
 
 ### 📫 Connect with Me
 
 - 🌍 Based in Hong Kong
-- 🐙 GitHub: [dull-bird](https://github.com/dull-bird)
 - 💼 [LinkedIn](https://www.linkedin.com/in/%E7%AB%8B-%E6%9D%8E-044111114/)
 
 > "Pushing the physical limits of hardware to operationalize human dignity."
