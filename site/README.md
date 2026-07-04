@@ -37,7 +37,7 @@ src/
 
 ```sh
 npm install
-npm run dev       # http://localhost:4321/dull-bird/
+npm run dev       # http://localhost:4321/
 npm run build     # -> dist/
 npm run preview
 ```
@@ -50,10 +50,6 @@ publishes `dist/` to GitHub Pages on every push to `main`. Enable Pages →
 
 ## Known placeholders — please replace
 
-- **GitHub Pages base path**: `astro.config.mjs` sets `site` +
-  `base: '/dull-bird'`, assuming this repo stays named `dull-bird/dull-bird`
-  (a *project* page, served at `/dull-bird/`). If you rename the repo to
-  `dull-bird.github.io` (a *user* page), delete the `base` line.
 - **Contact links**: the GitHub/Email links in the footer and About page are
   placeholders (`https://github.com/dull-bird`, `#`) — swap in your real
   profile and email.
