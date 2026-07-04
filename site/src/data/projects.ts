@@ -24,6 +24,7 @@ export const projects: Project[] = [
     name: 'changde-dialect-skill',
     repo: 'https://github.com/dull-bird/changde-dialect-skill',
     homepage: 'https://dull-bird.github.io/changde-dialect-skill/',
+    logo: '/projects/changde-dialect-skill-logo.png',
     zh: '一个让 AI agent 用常德方言（汉寿口音）对话的技能，基于常德方言词语汇 1000 条整理而成。',
     en: 'An agent skill that makes Claude Code / Codex / OpenClaw converse in the Changde dialect (Hanshou accent), built from a curated 1,000-entry Changde dialect vocabulary.',
   },
@@ -34,8 +35,9 @@ export const projects: Project[] = [
     en: 'An AI-agent system that bridges LLMs with Obsidian to automate deep research and personal knowledge management. Helps maintain a high-velocity learning loop by automating the capture and synthesis of information.',
   },
   {
-    name: 'CV DebugMate C++',
+    name: 'C++ DebugMate',
     repo: 'https://github.com/dull-bird/cv_debug_mate_cpp',
+    logo: '/projects/cv-debugmate-logo.png',
     zh: '一个面向计算机视觉工程师的 VS Code 插件，能在 C++ 调试过程中直接可视化 1D/2D/3D 数据结构，把抽象的内存缓冲区变成直观的图像和图表。',
     en: 'A VS Code extension for computer vision engineers. Visualizes 1D/2D/3D data structures directly during C++ debugging sessions, turning abstract memory buffers into intuitive images and plots.',
   },
