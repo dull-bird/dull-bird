@@ -1,25 +1,26 @@
-# CODING AGENTS: READ THIS FIRST
+# 呆鸟小筑 · dull-bird
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+一个关于技术与 AI 的个人网站——安静、留白、双语（中文为主，英文由 AI 翻译、人工校对）。
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+> 笨鸟先飞——与其等一切准备妥当，不如现在就把想法分享出来。
+> 未来已来，只是分布不均。 — William Gibson
 
-## What you should do — IMPORTANT
+## 这个仓库里有什么
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+- **[`site/`](site/)** — 用 [Astro](https://astro.build) 实现的正式网站，静态生成，托管在 GitHub Pages。这是唯一真正跑起来的东西。
+- **[`project/`](project/)** — Claude Design 生成的设计系统交接文档：色彩、字体、间距、组件等所有视觉基础，`site/` 的样式都是从这里原样搬过去的。
+- **[`chats/`](chats/)** — 和设计助手的原始对话记录，留作设计决策是怎么一步步定下来的存档。
 
-**Find the primary design file under `project/` and read it top to bottom.** The chat transcripts will tell you which file the user was last iterating on. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+## 开发
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+```sh
+cd site
+npm install
+npm run dev
+```
 
-## About the design files
+更多细节见 [site/README.md](site/README.md)。
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+## 部署
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
-
-## Bundle contents
-
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `dull-bird 呆鸟小筑 Design System` project files (HTML prototypes, assets, components)
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) 在每次 push 到 `main` 时构建 `site/` 并发布到 GitHub Pages。
