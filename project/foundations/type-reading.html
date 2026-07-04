@@ -1,0 +1,27 @@
+<!-- @dsCard group="Type" viewport="700x230" name="Reading & body" subtitle="Serif prose with CJK-aware leading" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 22px; background: var(--surface-page); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .tag { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); display: block; margin-bottom: 8px; }
+  .zh { font-family: var(--font-reading); font-size: var(--text-md); line-height: var(--leading-cjk); color: var(--text-body); }
+  .en { font-family: var(--font-reading); font-size: var(--text-md); line-height: var(--leading-reading); color: var(--text-body); }
+</style>
+</head>
+<body>
+<div class="cols">
+  <div>
+    <span class="tag">md · 18 / leading-cjk 1.9</span>
+    <p class="zh">未来已经到来，只是分布不均。我想主动把一些关于新技术的想法分享出来——笨鸟先飞。</p>
+  </div>
+  <div>
+    <span class="tag">md · 18 / leading-reading 1.72</span>
+    <p class="en">The future is already here — it's just not evenly distributed. I'd rather share early than wait for it to arrive.</p>
+  </div>
+</div>
+</body>
+</html>

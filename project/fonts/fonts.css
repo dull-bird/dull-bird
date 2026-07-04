@@ -1,0 +1,16 @@
+/* ============================================================
+   dull-bird 呆鸟小筑 — Webfonts
+   Loaded from Google Fonts CDN (works cleanly on GitHub Pages).
+
+   SUBSTITUTION NOTE: no brand font files were provided, so these
+   are curated Google Fonts choices. Swap the @import + families
+   in typography.css if you license bespoke faces.
+
+     · Newsreader     — literary serif, for reading & display (Latin)
+     · Noto Serif SC  — Chinese serif companion
+     · Hanken Grotesk — warm humanist sans, for UI (Latin)
+     · Noto Sans SC   — Chinese sans companion
+     · IBM Plex Mono  — technical mono, for code & the agent view
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Hanken+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap");

@@ -1,0 +1,31 @@
+<!-- @dsCard group="Type" viewport="700x180" name="Font families" subtitle="Serif reads & displays · Sans for UI · Mono for code & agents" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 22px; background: var(--surface-page); }
+  .fam { display: flex; align-items: baseline; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--border-hairline); }
+  .fam:last-child { border-bottom: none; }
+  .spec { font-size: 30px; color: var(--text-heading); line-height: 1.1; }
+  .meta { margin-left: auto; text-align: right; }
+  .role { font-family: var(--font-mono); font-size: 11px; color: var(--text-heading); }
+  .stack { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); }
+</style>
+</head>
+<body>
+<div class="fam">
+  <span class="spec" style="font-family:var(--font-serif)">未来已来 Newsreader</span>
+  <div class="meta"><div class="role">--font-serif</div><div class="stack">display · reading</div></div>
+</div>
+<div class="fam">
+  <span class="spec" style="font-family:var(--font-sans)">呆鸟小筑 Hanken Grotesk</span>
+  <div class="meta"><div class="role">--font-sans</div><div class="stack">ui · nav · buttons</div></div>
+</div>
+<div class="fam">
+  <span class="spec" style="font-family:var(--font-mono);font-size:24px">IBM Plex Mono 呆鸟</span>
+  <div class="meta"><div class="role">--font-mono</div><div class="stack">code · meta · agents</div></div>
+</div>
+</body>
+</html>

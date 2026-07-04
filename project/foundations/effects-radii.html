@@ -1,0 +1,22 @@
+<!-- @dsCard group="Effects" viewport="700x150" name="Corner radii" subtitle="Soft, rounded — echoing the fluid line-bird" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 22px; background: var(--surface-page); display: flex; gap: 16px; align-items: flex-end; }
+  .b { width: 70px; height: 70px; background: var(--surface-card); border: 1px solid var(--border-strong); display: flex; align-items: flex-end; justify-content: center; }
+  .w { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .n { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="w"><div class="b" style="border-radius:var(--radius-xs)"></div><span class="n">xs · 4</span></div>
+<div class="w"><div class="b" style="border-radius:var(--radius-sm)"></div><span class="n">sm · 8</span></div>
+<div class="w"><div class="b" style="border-radius:var(--radius-md)"></div><span class="n">md · 12</span></div>
+<div class="w"><div class="b" style="border-radius:var(--radius-lg)"></div><span class="n">lg · 18</span></div>
+<div class="w"><div class="b" style="border-radius:var(--radius-xl)"></div><span class="n">xl · 28</span></div>
+<div class="w"><div class="b" style="border-radius:var(--radius-pill)"></div><span class="n">pill</span></div>
+</body>
+</html>

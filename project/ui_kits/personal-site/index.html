@@ -1,0 +1,102 @@
+<!-- @dsCard group="Personal site" viewport="1280x760" name="呆鸟小筑 · dull-bird — full site" subtitle="Interactive bilingual personal site: home, writing, article, about/now, agent view" -->
+<!-- @startingPoint section="Site" subtitle="Full bilingual personal-site kit — home, blog, about, agent view" viewport="1280x820" -->
+<!DOCTYPE html>
+<html lang="zh" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>呆鸟小筑 · dull-bird</title>
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  html, body { min-height: 100%; }
+  body { margin: 0; }
+  #app { display: flex; flex-direction: column; min-height: 100vh; }
+  #app > main { flex: 1; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="../../assets/accent.js"></script>
+<script src="data.js"></script>
+<script type="text/babel" src="Home.jsx"></script>
+<script type="text/babel" src="Writing.jsx"></script>
+<script type="text/babel" src="Article.jsx"></script>
+<script type="text/babel" src="About.jsx"></script>
+<script type="text/babel" src="AgentView.jsx"></script>
+<script type="text/babel">
+  const { SiteHeader, SiteFooter } = window.DullBirdDesignSystem_6473ec;
+
+  function useHashRoute() {
+    const [hash, setHash] = React.useState(window.location.hash || "#/");
+    React.useEffect(() => {
+      const on = () => setHash(window.location.hash || "#/");
+      window.addEventListener("hashchange", on);
+      return () => window.removeEventListener("hashchange", on);
+    }, []);
+    return hash;
+  }
+
+  function App() {
+    const [lang, setLang] = React.useState("zh");
+    const [theme, setTheme] = React.useState("light");
+    const hash = useHashRoute();
+
+    React.useEffect(() => {
+      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.setAttribute("lang", lang);
+    }, [theme, lang]);
+
+    React.useEffect(() => {
+      // Wire the signature accent engine: hue drifts on interaction.
+      window.dullbirdAccent && window.dullbirdAccent.init({ mode: "next" });
+    }, []);
+
+    const go = (h) => { window.location.hash = h; document.getElementById("app").scrollIntoView ? window.scrollTo({ top: 0 }) : null; };
+
+    // Route
+    let screen, active = hash;
+    if (hash.startsWith("#/post/")) {
+      const slug = hash.replace("#/post/", "");
+      screen = <window.Article lang={lang} go={go} slug={slug} />;
+      active = "#/writing";
+    } else if (hash.startsWith("#/writing")) {
+      screen = <window.Writing lang={lang} go={go} />;
+    } else if (hash.startsWith("#/about") || hash.startsWith("#/now")) {
+      screen = <window.About lang={lang} go={go} />;
+    } else if (hash.startsWith("#/agents")) {
+      screen = <window.AgentView lang={lang} go={go} />;
+      active = "";
+    } else {
+      screen = <window.Home lang={lang} go={go} />;
+      active = "#/";
+    }
+
+    const nav = lang === "zh"
+      ? [{ label: "文章", href: "#/writing" }, { label: "关于", href: "#/about" }, { label: "给 AI", href: "#/agents" }]
+      : [{ label: "Writing", href: "#/writing" }, { label: "About", href: "#/about" }, { label: "For AI", href: "#/agents" }];
+
+    return (
+      <div id="app">
+        <SiteHeader
+          lang={lang}
+          onLangChange={setLang}
+          theme={theme}
+          onThemeToggle={() => setTheme((x) => (x === "dark" ? "light" : "dark"))}
+          nav={nav}
+          active={active}
+        />
+        {screen}
+        <SiteFooter lang={lang} agentHref="#/agents" />
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+</script>
+</body>
+</html>

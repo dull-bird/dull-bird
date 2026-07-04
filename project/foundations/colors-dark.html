@@ -1,0 +1,23 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Dark theme" subtitle="Warm near-black — data-theme='dark'" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 20px; background: var(--surface-page); }
+  .row { display: flex; gap: 14px; }
+  .sw { flex: 1; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); padding: 14px; height: 92px; display: flex; flex-direction: column; justify-content: space-between; }
+  .name { font-family: var(--font-mono); font-size: 12px; color: var(--text-heading); }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+  .a { font-family: var(--font-display); font-size: 24px; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="sw" style="background:var(--paper)"><span class="a" style="color:var(--ink)">呆 Aa</span><div><div class="name">--paper</div><div class="hex">#16150f</div></div></div>
+  <div class="sw" style="background:var(--paper-raised)"><span class="a" style="color:var(--ink-soft)">呆 Aa</span><div><div class="name">--paper-raised</div><div class="hex">#201e18</div></div></div>
+  <div class="sw" style="background:var(--paper);border-color:var(--accent-line)"><span class="a" style="color:var(--accent-ink)">呆 Aa</span><div><div class="name">--accent-ink</div><div class="hex">oklch(78%…)</div></div></div>
+</div>
+</body>
+</html>

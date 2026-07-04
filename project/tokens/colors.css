@@ -1,0 +1,85 @@
+/* ============================================================
+   dull-bird 呆鸟小筑 — Color system
+   Warm paper base, warm ink, and a signature accent whose HUE
+   shifts smoothly on interaction (see --accent-h + accent.js).
+   ============================================================ */
+
+/* Register the accent hue as an animatable number so the accent
+   can drift smoothly between curated stops on hover / click. */
+@property --accent-h {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 24;
+}
+
+:root {
+  /* --- Warm paper surfaces --- */
+  --paper:         #fbfaf7;   /* page background */
+  --paper-raised:  #ffffff;   /* cards, popovers */
+  --paper-sunken:  #f2f0ea;   /* wells, code blocks, inputs */
+
+  /* --- Warm ink text ramp --- */
+  --ink:        #1b1a18;      /* primary text, display */
+  --ink-soft:   #4a4742;      /* secondary text */
+  --ink-mute:   #8a857c;      /* captions, metadata */
+  --ink-faint:  #b7b1a5;      /* disabled, placeholders */
+
+  /* --- Hairlines & borders --- */
+  --line:        #e6e2d9;     /* default hairline */
+  --line-strong: #d6d1c4;     /* emphasized border */
+
+  /* --- Signature accent (oklch, hue is animated) ---
+     Curated hue stops the accent cycles through on interaction:
+       24  coral · 68 marigold · 150 jade · 194 teal · 255 cobalt · 322 plum */
+  --accent-c: 0.135;          /* @kind other */
+  --accent-l: 60%;            /* lightness */
+  --accent:      oklch(var(--accent-l) var(--accent-c) var(--accent-h));
+  --accent-ink:  oklch(46% 0.13 var(--accent-h));   /* accent as readable text on paper */
+  --accent-soft: oklch(95% 0.032 var(--accent-h));  /* tinted surface */
+  --accent-line: oklch(88% 0.055 var(--accent-h));  /* tinted hairline */
+
+  /* --- Functional (used sparingly; a personal site rarely needs these) --- */
+  --positive: oklch(58% 0.11 150);
+  --caution:  oklch(66% 0.12 70);
+  --critical: oklch(56% 0.16 25);
+
+  /* ================= Semantic aliases ================= */
+  --surface-page:   var(--paper);
+  --surface-card:   var(--paper-raised);
+  --surface-well:   var(--paper-sunken);
+
+  --text-heading:   var(--ink);
+  --text-body:      var(--ink-soft);
+  --text-muted:     var(--ink-mute);
+  --text-faint:     var(--ink-faint);
+  --text-accent:    var(--accent-ink);
+  --text-on-accent: #fbfaf7;
+
+  --border-hairline: var(--line);
+  --border-strong:   var(--line-strong);
+  --border-accent:   var(--accent-line);
+
+  --focus-ring: var(--accent);
+}
+
+/* ================= Dark theme ================= */
+[data-theme="dark"] {
+  --paper:        #16150f;
+  --paper-raised: #201e18;
+  --paper-sunken: #100f0b;
+
+  --ink:       #f3f0e7;
+  --ink-soft:  #c6c0b2;
+  --ink-mute:  #8f897b;
+  --ink-faint: #625d52;
+
+  --line:        #2c2a23;
+  --line-strong: #3b382f;
+
+  --accent-l: 70%;
+  --accent-ink:  oklch(78% 0.12 var(--accent-h));
+  --accent-soft: oklch(28% 0.05 var(--accent-h));
+  --accent-line: oklch(38% 0.06 var(--accent-h));
+
+  --text-on-accent: #16150f;
+}

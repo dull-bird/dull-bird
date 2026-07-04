@@ -1,0 +1,428 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "assets/**",
+              "components/brand/**",
+              "components/content/**",
+              "components/core/**",
+              "components/site/**",
+              "ui_kits/personal-site/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Newsreader|Hanken Grotesk|IBM Plex Mono|Noto Serif SC|Noto Sans SC))/i]",
+        "message": "Font not provided by the design system. Available: Newsreader, Hanken Grotesk, IBM Plex Mono, Noto Serif SC, Noto Sans SC."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BirdMark'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|size|color|strokeWidth|animate|title|key|ref|className|style|children)$/]",
+        "message": "<BirdMark> doesn't accept that prop. Declared props: variant, size, color, strokeWidth, animate, title."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BirdMark'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:line|solid|stroke)$/]",
+        "message": "<BirdMark> variant must be one of 'line' | 'solid' | 'stroke'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|size|href|disabled|fullWidth|iconLeft|iconRight|children|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, size, href, disabled, fullWidth, iconLeft, iconRight, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|secondary|ghost)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'secondary' | 'ghost'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Button> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Callout'] > JSXAttribute > JSXIdentifier[name!=/^(?:tone|title|mark|children|key|ref|className|style|children)$/]",
+        "message": "<Callout> doesn't accept that prop. Declared props: tone, title, mark, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Callout'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:accent|quiet)$/]",
+        "message": "<Callout> tone must be one of 'accent' | 'quiet'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute > JSXIdentifier[name!=/^(?:href|flat|interactive|children|key|ref|className|style|children)$/]",
+        "message": "<Card> doesn't accept that prop. Declared props: href, flat, interactive, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LangToggle'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|onChange|labels|key|ref|className|style|children)$/]",
+        "message": "<LangToggle> doesn't accept that prop. Declared props: value, onChange, labels."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LangToggle'] > JSXAttribute[name.name='value'] > Literal[value!=/^(?:zh|en)$/]",
+        "message": "<LangToggle> value must be one of 'zh' | 'en'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PostMeta'] > JSXAttribute > JSXIdentifier[name!=/^(?:date|readingTime|lang|items|key|ref|className|style|children)$/]",
+        "message": "<PostMeta> doesn't accept that prop. Declared props: date, readingTime, lang, items."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PostMeta'] > JSXAttribute[name.name='lang'] > Literal[value!=/^(?:zh|en)$/]",
+        "message": "<PostMeta> lang must be one of 'zh' | 'en'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Prose'] > JSXAttribute > JSXIdentifier[name!=/^(?:lang|html|children|key|ref|className|style|children)$/]",
+        "message": "<Prose> doesn't accept that prop. Declared props: lang, html, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Prose'] > JSXAttribute[name.name='lang'] > Literal[value!=/^(?:zh|en)$/]",
+        "message": "<Prose> lang must be one of 'zh' | 'en'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FooterColumn'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|links|key|ref|className|style|children)$/]",
+        "message": "<FooterColumn> doesn't accept that prop. Declared props: title, links."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NavItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|href|key|ref|className|style|children)$/]",
+        "message": "<NavItem> doesn't accept that prop. Declared props: label, href."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tag'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|href|iconLeft|children|key|ref|className|style|children)$/]",
+        "message": "<Tag> doesn't accept that prop. Declared props: variant, href, iconLeft, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tag'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:default|accent|bare)$/]",
+        "message": "<Tag> variant must be one of 'default' | 'accent' | 'bare'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TextLink'] > JSXAttribute > JSXIdentifier[name!=/^(?:href|muted|children|key|ref|className|style|children)$/]",
+        "message": "<TextLink> doesn't accept that prop. Declared props: href, muted, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Wordmark'] > JSXAttribute > JSXIdentifier[name!=/^(?:lang|size|showMark|markVariant|orientation|tagline|key|ref|className|style|children)$/]",
+        "message": "<Wordmark> doesn't accept that prop. Declared props: lang, size, showMark, markVariant, orientation, tagline."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Wordmark'] > JSXAttribute[name.name='lang'] > Literal[value!=/^(?:zh|en)$/]",
+        "message": "<Wordmark> lang must be one of 'zh' | 'en'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Wordmark'] > JSXAttribute[name.name='markVariant'] > Literal[value!=/^(?:line|solid|stroke)$/]",
+        "message": "<Wordmark> markVariant must be one of 'line' | 'solid' | 'stroke'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Wordmark'] > JSXAttribute[name.name='orientation'] > Literal[value!=/^(?:horizontal|stacked)$/]",
+        "message": "<Wordmark> orientation must be one of 'horizontal' | 'stacked'."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "BirdMark": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Callout": {
+        "replaces": []
+      },
+      "Card": {
+        "replaces": []
+      },
+      "LangToggle": {
+        "replaces": []
+      },
+      "PostMeta": {
+        "replaces": []
+      },
+      "Prose": {
+        "replaces": []
+      },
+      "FooterColumn": {
+        "replaces": []
+      },
+      "NavItem": {
+        "replaces": []
+      },
+      "Tag": {
+        "replaces": []
+      },
+      "TextLink": {
+        "replaces": []
+      },
+      "Wordmark": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--accent",
+      "--accent-c",
+      "--accent-ink",
+      "--accent-l",
+      "--accent-line",
+      "--accent-soft",
+      "--border-accent",
+      "--border-hair",
+      "--border-hairline",
+      "--border-strong",
+      "--border-thick",
+      "--caution",
+      "--critical",
+      "--dur-accent",
+      "--dur-base",
+      "--dur-draw",
+      "--dur-fast",
+      "--dur-instant",
+      "--dur-slow",
+      "--ease-inout",
+      "--ease-line",
+      "--ease-organic",
+      "--ease-soft",
+      "--focus-ring",
+      "--font-code",
+      "--font-display",
+      "--font-mono",
+      "--font-reading",
+      "--font-sans",
+      "--font-serif",
+      "--font-ui",
+      "--gap-block",
+      "--gap-default",
+      "--gap-inline",
+      "--gap-section",
+      "--gap-tight",
+      "--gutter",
+      "--ink",
+      "--ink-faint",
+      "--ink-mute",
+      "--ink-soft",
+      "--leading-cjk",
+      "--leading-none",
+      "--leading-normal",
+      "--leading-reading",
+      "--leading-snug",
+      "--leading-tight",
+      "--line",
+      "--line-strong",
+      "--measure",
+      "--measure-cjk",
+      "--page-max",
+      "--paper",
+      "--paper-raised",
+      "--paper-sunken",
+      "--positive",
+      "--radius-2xl",
+      "--radius-circle",
+      "--radius-lg",
+      "--radius-md",
+      "--radius-pill",
+      "--radius-sm",
+      "--radius-xl",
+      "--radius-xs",
+      "--reading-max",
+      "--ring",
+      "--ring-strong",
+      "--shadow-lg",
+      "--shadow-md",
+      "--shadow-sm",
+      "--shadow-xs",
+      "--space-0",
+      "--space-1",
+      "--space-10",
+      "--space-11",
+      "--space-12",
+      "--space-2",
+      "--space-3",
+      "--space-4",
+      "--space-5",
+      "--space-6",
+      "--space-7",
+      "--space-8",
+      "--space-9",
+      "--surface-card",
+      "--surface-page",
+      "--surface-well",
+      "--t-accent",
+      "--t-colors",
+      "--t-lift",
+      "--text-2xl",
+      "--text-3xl",
+      "--text-4xl",
+      "--text-5xl",
+      "--text-accent",
+      "--text-base",
+      "--text-body",
+      "--text-faint",
+      "--text-heading",
+      "--text-lg",
+      "--text-md",
+      "--text-muted",
+      "--text-on-accent",
+      "--text-sm",
+      "--text-xl",
+      "--text-xs",
+      "--tracking-normal",
+      "--tracking-snug",
+      "--tracking-tight",
+      "--tracking-wide",
+      "--weight-light",
+      "--weight-medium",
+      "--weight-regular",
+      "--weight-semibold"
+    ],
+    "tokenKinds": {
+      "--paper": "color",
+      "--paper-raised": "color",
+      "--paper-sunken": "color",
+      "--ink": "color",
+      "--ink-soft": "color",
+      "--ink-mute": "color",
+      "--ink-faint": "color",
+      "--line": "color",
+      "--line-strong": "color",
+      "--accent-c": "other",
+      "--accent-l": "spacing",
+      "--accent": "color",
+      "--accent-ink": "color",
+      "--accent-soft": "color",
+      "--accent-line": "color",
+      "--positive": "color",
+      "--caution": "color",
+      "--critical": "color",
+      "--surface-page": "color",
+      "--surface-card": "color",
+      "--surface-well": "color",
+      "--text-heading": "font",
+      "--text-body": "font",
+      "--text-muted": "font",
+      "--text-faint": "font",
+      "--text-accent": "font",
+      "--text-on-accent": "font",
+      "--border-hairline": "color",
+      "--border-strong": "color",
+      "--border-accent": "color",
+      "--focus-ring": "color",
+      "--font-serif": "font",
+      "--font-sans": "font",
+      "--font-mono": "font",
+      "--font-display": "font",
+      "--font-reading": "font",
+      "--font-ui": "font",
+      "--font-code": "font",
+      "--text-xs": "font",
+      "--text-sm": "font",
+      "--text-base": "font",
+      "--text-md": "font",
+      "--text-lg": "font",
+      "--text-xl": "font",
+      "--text-2xl": "font",
+      "--text-3xl": "font",
+      "--text-4xl": "font",
+      "--text-5xl": "font",
+      "--leading-none": "font",
+      "--leading-tight": "font",
+      "--leading-snug": "font",
+      "--leading-normal": "font",
+      "--leading-reading": "font",
+      "--leading-cjk": "font",
+      "--weight-light": "font",
+      "--weight-regular": "font",
+      "--weight-medium": "font",
+      "--weight-semibold": "font",
+      "--tracking-tight": "font",
+      "--tracking-snug": "font",
+      "--tracking-normal": "font",
+      "--tracking-wide": "font",
+      "--measure": "spacing",
+      "--measure-cjk": "spacing",
+      "--space-0": "spacing",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-5": "spacing",
+      "--space-6": "spacing",
+      "--space-7": "spacing",
+      "--space-8": "spacing",
+      "--space-9": "spacing",
+      "--space-10": "spacing",
+      "--space-11": "spacing",
+      "--space-12": "spacing",
+      "--gap-inline": "spacing",
+      "--gap-tight": "spacing",
+      "--gap-default": "spacing",
+      "--gap-section": "spacing",
+      "--gap-block": "spacing",
+      "--page-max": "spacing",
+      "--reading-max": "spacing",
+      "--gutter": "spacing",
+      "--ease-organic": "other",
+      "--ease-soft": "other",
+      "--ease-inout": "other",
+      "--ease-line": "other",
+      "--dur-instant": "other",
+      "--dur-fast": "other",
+      "--dur-base": "other",
+      "--dur-slow": "other",
+      "--dur-accent": "other",
+      "--dur-draw": "other",
+      "--t-colors": "other",
+      "--t-accent": "other",
+      "--t-lift": "other",
+      "--radius-xs": "radius",
+      "--radius-sm": "radius",
+      "--radius-md": "radius",
+      "--radius-lg": "radius",
+      "--radius-xl": "radius",
+      "--radius-2xl": "radius",
+      "--radius-pill": "radius",
+      "--radius-circle": "radius",
+      "--border-hair": "spacing",
+      "--border-thick": "spacing",
+      "--shadow-xs": "shadow",
+      "--shadow-sm": "shadow",
+      "--shadow-md": "shadow",
+      "--shadow-lg": "shadow",
+      "--ring": "color",
+      "--ring-strong": "color"
+    },
+    "fontFamilies": [
+      "Hanken Grotesk",
+      "IBM Plex Mono",
+      "Newsreader",
+      "Noto Sans SC",
+      "Noto Serif SC"
+    ]
+  }
+}

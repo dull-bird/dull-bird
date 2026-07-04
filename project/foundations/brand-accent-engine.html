@@ -1,0 +1,30 @@
+<!-- @dsCard group="Brand" viewport="700x180" name="Accent engine · 随机变色" subtitle="Hover / click anything — the accent hue drifts smoothly. Try it." -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-page); font-family: var(--font-ui); }
+  .lead { font-family: var(--font-display); font-size: 22px; color: var(--text-heading); margin-bottom: 16px; }
+  .lead em { font-style: normal; color: var(--accent-ink); transition: color var(--dur-accent) var(--ease-organic); }
+  .chips { display: flex; gap: 12px; flex-wrap: wrap; }
+  .chip { font-family: var(--font-mono); font-size: 13px; padding: 9px 16px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--accent-line); cursor: pointer; transition: all var(--dur-accent) var(--ease-organic); }
+  .dot { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; transition: background var(--dur-accent) var(--ease-organic); }
+  .hint { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="lead">一处 <em>accent</em>，六个色相 · <em>one hue, always shifting</em></div>
+<div class="chips">
+  <button class="dot" aria-label="shift"></button>
+  <span class="chip">the future</span>
+  <span class="chip">AI agents</span>
+  <span class="chip">笨鸟先飞</span>
+  <span class="chip">分布不均</span>
+</div>
+<div class="hint">--accent-h is a registered @property → hover / click drifts it between coral · marigold · jade · teal · cobalt · plum</div>
+<script src="../assets/accent.js"></script>
+<script>dullbirdAccent.init({ mode: "next" });</script>
+</body>
+</html>

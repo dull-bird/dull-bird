@@ -1,0 +1,26 @@
+<!-- @dsCard group="Motion" viewport="700x180" name="Easing & durations" subtitle="Flowing organic settle — no bounces. Hover a bar to feel it." -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 22px; background: var(--surface-page); }
+  .r { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .track { flex: 1; height: 10px; background: var(--surface-well); border-radius: var(--radius-pill); position: relative; overflow: hidden; }
+  .dot { position: absolute; top: 0; left: 0; width: 34px; height: 10px; border-radius: var(--radius-pill); background: var(--accent); transition: transform 1.4s var(--ease-organic); }
+  .r:hover .dot { transform: translateX(calc(100% * 10)); }
+  .r.soft .dot { transition-timing-function: var(--ease-soft); }
+  .r.line .dot { transition-timing-function: var(--ease-line); }
+  .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); width: 210px; }
+</style>
+</head>
+<body>
+<div class="r"><span class="n">--ease-organic · default settle</span><div class="track"><div class="dot"></div></div></div>
+<div class="r soft"><span class="n">--ease-soft · UI transitions</span><div class="track"><div class="dot"></div></div></div>
+<div class="r line"><span class="n">--ease-line · stroke drawing</span><div class="track"><div class="dot"></div></div></div>
+<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-top:14px">
+  durations · instant 90 · fast 160 · base 280 · slow 520 · accent 700 · draw 1600 (ms)
+</div>
+</body>
+</html>

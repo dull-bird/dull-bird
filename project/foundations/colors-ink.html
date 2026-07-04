@@ -1,0 +1,24 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Ink ramp" subtitle="Warm near-black text, four steps" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 20px; background: var(--surface-page); }
+  .row { display: flex; gap: 14px; }
+  .sw { flex: 1; border-radius: var(--radius-md); padding: 14px; height: 92px; display: flex; flex-direction: column; justify-content: space-between; color: var(--paper); }
+  .name { font-family: var(--font-mono); font-size: 12px; }
+  .hex { font-family: var(--font-mono); font-size: 11px; opacity: .7; }
+  .big { font-family: var(--font-display); font-size: 26px; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="sw" style="background:var(--ink)"><span class="big">Aa 呆</span><div><div class="name">--ink</div><div class="hex">#1b1a18</div></div></div>
+  <div class="sw" style="background:var(--ink-soft)"><span class="big">Aa 呆</span><div><div class="name">--ink-soft</div><div class="hex">#4a4742</div></div></div>
+  <div class="sw" style="background:var(--ink-mute)"><span class="big">Aa 呆</span><div><div class="name">--ink-mute</div><div class="hex">#8a857c</div></div></div>
+  <div class="sw" style="background:var(--ink-faint)"><span class="big">Aa 呆</span><div><div class="name">--ink-faint</div><div class="hex">#b7b1a5</div></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!-- @dsCard group="Colors" viewport="700x175" name="Signature accent" subtitle="One accent, six curated hue stops it shifts through on interaction" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 20px; background: var(--surface-page); }
+  .stops { display: flex; gap: 10px; margin-bottom: 14px; }
+  .stop { flex: 1; height: 66px; border-radius: var(--radius-md); display: flex; align-items: flex-end; padding: 8px; }
+  .stop span { font-family: var(--font-mono); font-size: 10px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .tints { display: flex; gap: 10px; }
+  .tint { flex: 1; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="stops">
+  <div class="stop" style="background:oklch(60% .135 24)"><span>24 coral</span></div>
+  <div class="stop" style="background:oklch(60% .135 68)"><span>68 marigold</span></div>
+  <div class="stop" style="background:oklch(60% .135 150)"><span>150 jade</span></div>
+  <div class="stop" style="background:oklch(60% .135 194)"><span>194 teal</span></div>
+  <div class="stop" style="background:oklch(60% .135 255)"><span>255 cobalt</span></div>
+  <div class="stop" style="background:oklch(60% .135 322)"><span>322 plum</span></div>
+</div>
+<div class="tints">
+  <div class="tint" style="background:var(--accent);color:var(--text-on-accent)">--accent</div>
+  <div class="tint" style="background:var(--accent-soft);color:var(--accent-ink)">--accent-soft</div>
+  <div class="tint" style="background:var(--paper);color:var(--accent-ink);border:1px solid var(--accent-line)">--accent-ink · line</div>
+</div>
+</body>
+</html>

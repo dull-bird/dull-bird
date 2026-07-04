@@ -1,0 +1,33 @@
+/* ============================================================
+   dull-bird 呆鸟小筑 — Spacing & layout
+   A quiet, whitespace-forward rhythm. Base unit 4px, opening up
+   into generous editorial gaps for the elegant / airy feel.
+   ============================================================ */
+
+:root {
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+  --space-11: 160px;
+  --space-12: 224px;
+
+  /* Semantic spacing */
+  --gap-inline:  var(--space-2);   /* icon ↔ label */
+  --gap-tight:   var(--space-3);
+  --gap-default: var(--space-5);
+  --gap-section: var(--space-9);   /* between page sections */
+  --gap-block:   var(--space-11);  /* big editorial breaks */
+
+  /* Layout frame */
+  --page-max:    1160px;   /* wide content cap */
+  --reading-max: 680px;    /* article column */
+  --gutter:      clamp(20px, 5vw, 64px);   /* @kind spacing */
+}

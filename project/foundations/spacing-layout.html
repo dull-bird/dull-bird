@@ -1,0 +1,22 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Layout frame" subtitle="Wide page cap, narrow reading column, fluid gutter" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 20px; background: var(--surface-page); }
+  .frame { position: relative; background: var(--surface-well); border-radius: var(--radius-sm); height: 120px; overflow: hidden; }
+  .page { position: absolute; inset: 0 40px; background: var(--paper-raised); border-left: 1px dashed var(--border-strong); border-right: 1px dashed var(--border-strong); }
+  .reading { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 300px; background: var(--accent-soft); border-left: 1px solid var(--accent-line); border-right: 1px solid var(--accent-line); }
+  .lbl { position: absolute; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="page"><span class="lbl" style="top:6px;left:8px">--page-max · 1160</span></div>
+  <div class="reading"><span class="lbl" style="top:6px;left:8px">--reading-max · 680</span></div>
+  <span class="lbl" style="bottom:6px;left:6px">--gutter · clamp(20,5vw,64)</span>
+</div>
+</body>
+</html>

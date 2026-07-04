@@ -1,0 +1,43 @@
+<!-- @dsCard group="Brand" viewport="700x200" name="Mark usage & clear space" subtitle="Clear space = head height · minimum sizes · do / don't" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 22px; background: var(--surface-page); display: flex; gap: 26px; align-items: center; }
+  .box { border: 1px dashed var(--border-strong); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; justify-content: center; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .n { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: center; }
+  .ok { color: var(--positive); } .no { color: var(--critical); }
+</style>
+</head>
+<body>
+<div class="col">
+  <div class="box"><span style="color:var(--ink)" id="m1"></span></div>
+  <span class="n">clear space<br/>= head height</span>
+</div>
+<div class="col">
+  <div class="box" style="border-style:solid;background:var(--ink)"><span style="color:var(--paper)" id="m2"></span></div>
+  <span class="n">reverse on ink ✓</span>
+</div>
+<div class="col">
+  <div class="box" style="border-style:solid;background:var(--accent)"><span style="color:var(--text-on-accent)" id="m3"></span></div>
+  <span class="n">on accent ✓</span>
+</div>
+<div class="col">
+  <div class="box" style="border-style:solid"><span id="m4"></span></div>
+  <span class="n"><span class="no">✕</span> don't recolor<br/>the mark arbitrarily</span>
+</div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<script>
+  var B = window.DullBirdDesignSystem_6473ec.BirdMark;
+  ReactDOM.createRoot(document.getElementById('m1')).render(React.createElement(B,{size:56}));
+  ReactDOM.createRoot(document.getElementById('m2')).render(React.createElement(B,{size:56}));
+  ReactDOM.createRoot(document.getElementById('m3')).render(React.createElement(B,{size:56}));
+  ReactDOM.createRoot(document.getElementById('m4')).render(React.createElement(B,{size:56,color:'#7bd389'}));
+</script>
+</body>
+</html>

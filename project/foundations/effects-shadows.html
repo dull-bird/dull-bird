@@ -1,0 +1,20 @@
+<!-- @dsCard group="Effects" viewport="700x160" name="Shadows" subtitle="Soft, warm-tinted — reserved for genuinely floating things" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 26px; background: var(--surface-page); display: flex; gap: 26px; align-items: center; }
+  .w { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .b { width: 96px; height: 62px; background: var(--paper-raised); border-radius: var(--radius-md); }
+  .n { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="w"><div class="b" style="box-shadow:var(--shadow-xs)"></div><span class="n">shadow-xs</span></div>
+<div class="w"><div class="b" style="box-shadow:var(--shadow-sm)"></div><span class="n">shadow-sm</span></div>
+<div class="w"><div class="b" style="box-shadow:var(--shadow-md)"></div><span class="n">shadow-md</span></div>
+<div class="w"><div class="b" style="box-shadow:var(--shadow-lg)"></div><span class="n">shadow-lg</span></div>
+</body>
+</html>
