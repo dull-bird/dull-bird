@@ -55,16 +55,9 @@
     var mode = opts.mode || "next"; // "next" | "random"
     var doShift = mode === "random" ? random : shift;
 
-    // Hover previews the next hue; this reads as playful but calm.
-    document.addEventListener(
-      "pointerenter",
-      function (e) {
-        var t = e.target;
-        if (t && t.closest && t.closest(selector)) doShift();
-      },
-      true
-    );
-    // A click commits a fresh hue too (touch / keyboard friendly).
+    // Only a click commits a fresh hue (touch / keyboard friendly).
+    // Hover used to trigger this too, but that made the color shift
+    // too easy to fire by accident while just moving the mouse.
     document.addEventListener("click", function (e) {
       var t = e.target;
       if (t && t.closest && t.closest(selector)) doShift();

@@ -7,6 +7,7 @@ export function routes(lang: Lang) {
     home: getRelativeLocaleUrl(lang, '/'),
     writing: getRelativeLocaleUrl(lang, '/writing/'),
     about: getRelativeLocaleUrl(lang, '/about/'),
+    projects: getRelativeLocaleUrl(lang, '/projects/'),
     agents: getRelativeLocaleUrl(lang, '/agents/'),
   };
 }

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Card from '../../../components/core/Card.astro';
+import { withBase } from '../../../lib/base';
+import { projects } from '../../../data/projects';
+
+const lang = 'en';
+---
+
+<BaseLayout lang={lang} title="Projects" activeNav="projects" description="Things built for fun, and things built to actually use.">
+  <main class="db-reading" style="padding-top: var(--space-9); padding-bottom: var(--space-8);">
+    <div class="db-eyebrow" style="margin-bottom: var(--space-3);">Projects · 项目</div>
+    <h1 style="font-size: var(--text-3xl); letter-spacing: var(--tracking-tight); margin-bottom: var(--space-3);">Things I've made</h1>
+    <p style="font-family: var(--font-reading); font-size: var(--text-md); color: var(--text-body); margin-bottom: var(--space-7);">
+      The slow bird starts early — ship it, then share it. AI agent tools, debugging plugins, and whatever else came up.
+    </p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-5);">
+      {projects.map((p) => (
+        <Card href={p.href} interactive style="display:flex; flex-direction:column; gap: var(--space-3);">
+          <div style="display:flex; align-items:center; gap: var(--space-3);">
+            {p.logo && <img src={withBase(p.logo)} alt="" width="32" height="32" style="border-radius: var(--radius-sm); flex: none;" />}
+            <span style="font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-body);">{p.name}</span>
+          </div>
+          <p style="font-family: var(--font-reading); font-size: var(--text-sm); color: var(--text-muted); line-height: 1.6; margin: 0;">
+            {p.en}
+          </p>
+        </Card>
+      ))}
+    </div>
+  </main>
+</BaseLayout>

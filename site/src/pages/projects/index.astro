@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/core/Card.astro';
+import { withBase } from '../../lib/base';
+import { projects } from '../../data/projects';
+
+const lang = 'zh';
+---
+
+<BaseLayout lang={lang} title="项目" activeNav="projects" description="一些做出来玩、也做出来用的项目。">
+  <main class="db-reading" style="padding-top: var(--space-9); padding-bottom: var(--space-8);">
+    <div class="db-eyebrow" style="margin-bottom: var(--space-3);">项目 · Projects</div>
+    <h1 style="font-size: var(--text-3xl); letter-spacing: var(--tracking-tight); margin-bottom: var(--space-3);">做出来的一些东西</h1>
+    <p style="font-family: var(--font-reading); font-size: var(--text-md); color: var(--text-body); margin-bottom: var(--space-7);">
+      笨鸟先飞，做完就发出来——从 AI agent 工具到调试插件，都在这。
+    </p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-5);">
+      {projects.map((p) => (
+        <Card href={p.href} interactive style="display:flex; flex-direction:column; gap: var(--space-3);">
+          <div style="display:flex; align-items:center; gap: var(--space-3);">
+            {p.logo && <img src={withBase(p.logo)} alt="" width="32" height="32" style="border-radius: var(--radius-sm); flex: none;" />}
+            <span style="font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-body);">{p.name}</span>
+          </div>
+          <p style="font-family: var(--font-reading); font-size: var(--text-sm); color: var(--text-muted); line-height: 1.6; margin: 0;">
+            {p.zh}
+          </p>
+        </Card>
+      ))}
+    </div>
+  </main>
+</BaseLayout>
