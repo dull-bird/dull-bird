@@ -1,0 +1,14 @@
+---
+// The reading container for long-form essays: serif body, generous
+// line-height, accent links, CJK-aware leading via [data-lang="zh"].
+interface Props {
+  lang?: 'zh' | 'en';
+  class?: string;
+}
+
+const { lang = 'zh', class: className } = Astro.props;
+---
+
+<div class={['db-prose', className].filter(Boolean).join(' ')} data-lang={lang}>
+  <slot />
+</div>

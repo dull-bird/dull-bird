@@ -1,0 +1,20 @@
+---
+// An inline text link with the brand's animated accent underline.
+interface Props {
+  href?: string;
+  muted?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const { href = '#', muted = false, class: className, style } = Astro.props;
+---
+
+<a
+  href={href}
+  class={['db-link', className].filter(Boolean).join(' ')}
+  data-muted={muted ? 'true' : undefined}
+  style={style}
+>
+  <slot />
+</a>

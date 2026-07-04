@@ -1,0 +1,31 @@
+---
+// A gentle aside for essays: a tinted panel with a bird mark and an
+// optional title. `accent` tone rides the live hue; `quiet` is neutral.
+import BirdMark from '../brand/BirdMark.astro';
+
+interface Props {
+  tone?: 'accent' | 'quiet';
+  title?: string;
+  mark?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const { tone = 'accent', title, mark = true, class: className, style } = Astro.props;
+---
+
+<div
+  class={['db-callout', className].filter(Boolean).join(' ')}
+  data-tone={tone !== 'accent' ? tone : undefined}
+  style={style}
+>
+  {mark && (
+    <span class="db-callout__mark" aria-hidden="true">
+      <BirdMark variant="stroke" size={22} strokeWidth={5} />
+    </span>
+  )}
+  <div class="db-callout__body">
+    {title && <div class="db-callout__title">{title}</div>}
+    <div><slot /></div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BirdMark from '../../components/brand/BirdMark.astro';
+import Button from '../../components/core/Button.astro';
+import Tag from '../../components/core/Tag.astro';
+import Card from '../../components/core/Card.astro';
+import PostMeta from '../../components/content/PostMeta.astro';
+import TextLink from '../../components/core/TextLink.astro';
+import { profile } from '../../data/site';
+import { getPosts } from '../../lib/posts';
+import { routes, postHref } from '../../lib/routes';
+
+const lang = 'en';
+const posts = (await getPosts(lang)).slice(0, 3);
+const r = routes(lang);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'dull-bird',
+  alternateName: '呆鸟',
+  description: profile.en.bio,
+  url: new URL(r.home, Astro.site).toString(),
+};
+---
+
+<BaseLayout lang={lang} title="" description={profile.en.bio} jsonLd={jsonLd}>
+  <main>
+    <section class="db-container" style="padding-top: var(--space-11); padding-bottom: var(--space-9);">
+      <div style="display:flex; gap: var(--space-8); align-items:center; flex-wrap:wrap;">
+        <div style="flex: 1 1 420px; min-width: 300px;">
+          <div class="db-eyebrow" style="margin-bottom: var(--space-4);">Thinking in public · 在公开处思考</div>
+          <h1 style="font-size: var(--text-4xl); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); margin-bottom: var(--space-5);">
+            dull-bird
+          </h1>
+          <p style="font-family: var(--font-reading); font-size: var(--text-lg); line-height: var(--leading-reading); color: var(--text-body); max-width: 40ch; margin-bottom: var(--space-6);">
+            {profile.en.bio}
+          </p>
+          <div style="display:flex; gap: var(--space-3); flex-wrap:wrap;">
+            <Button href={r.writing}>Start reading</Button>
+            <Button variant="secondary" href={r.about}>About</Button>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; margin: 0 auto;">
+          <BirdMark variant="line" size={260} strokeWidth={4} color="var(--accent)" animate />
+        </div>
+      </div>
+    </section>
+
+    <section class="db-container" style="padding-bottom: var(--space-9);">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--text-2xl);">Latest writing</h2>
+        <TextLink muted href={r.writing}>All writing →</TextLink>
+      </div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-5);">
+        {posts.map((post) => (
+          <Card href={postHref(lang, post.data.postSlug)} style="display:flex; flex-direction:column; gap: var(--space-3);">
+            <Tag variant="accent">{post.data.topic}</Tag>
+            <h3 style="font-size: var(--text-xl); line-height: var(--leading-snug);">{post.data.title}</h3>
+            <p style="font-family: var(--font-reading); color: var(--text-body); font-size: var(--text-base); line-height: 1.6; margin: 0;">
+              {post.data.lede}
+            </p>
+            <div style="margin-top:auto; padding-top: var(--space-3);">
+              <PostMeta date={post.data.date} readingTime={post.data.reading} lang={lang} />
+            </div>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section style="background: var(--surface-well); border-top: 1px solid var(--border-hairline); border-bottom: 1px solid var(--border-hairline);">
+      <div class="db-reading" style="padding-top: var(--space-9); padding-bottom: var(--space-9); text-align:center;">
+        <BirdMark variant="stroke" size={40} color="var(--accent)" style="margin: 0 auto var(--space-5);" />
+        <p style="font-family: var(--font-display); font-size: var(--text-2xl); line-height: var(--leading-snug); color: var(--text-heading); margin-bottom: var(--space-3);">
+          The future is already here — it's just not evenly distributed.
+        </p>
+        <div class="db-eyebrow">William Gibson</div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

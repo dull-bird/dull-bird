@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BirdMark from '../../components/brand/BirdMark.astro';
+import TextLink from '../../components/core/TextLink.astro';
+import { profile, now } from '../../data/site';
+import { routes } from '../../lib/routes';
+import { withBase } from '../../lib/base';
+
+const lang = 'zh';
+const r = routes(lang);
+---
+
+<BaseLayout lang={lang} title="关于" activeNav="about" description={profile.zh.bio}>
+  <main class="db-reading" style="padding-top: var(--space-9); padding-bottom: var(--space-8);">
+    <div style="display:flex; align-items:center; gap: var(--space-5); margin-bottom: var(--space-6);">
+      <BirdMark variant="line" size={72} color="var(--accent)" />
+      <div>
+        <div class="db-eyebrow" style="margin-bottom: 6px;">关于 · About</div>
+        <h1 style="font-size: var(--text-3xl); letter-spacing: var(--tracking-tight);">呆鸟是谁</h1>
+      </div>
+    </div>
+
+    <div class="db-prose" data-lang={lang} style="margin-bottom: var(--space-9);">
+      <p>{profile.zh.bio}</p>
+      <p>我相信技术最好的样子，是让更多人平等地用上它。所以我把学习和思考公开出来——写得不完美也没关系，先飞起来再说。</p>
+    </div>
+
+    <section style="margin-bottom: var(--space-8);" id="now">
+      <div style="display:flex; align-items:baseline; gap: var(--space-3); margin-bottom: var(--space-2);">
+        <h2 style="font-size: var(--text-2xl);">此刻</h2>
+        <span class="db-eyebrow">一份会过时的快照 · 更新于 2026 年 6 月</span>
+      </div>
+      <div style="display:flex; flex-direction:column;">
+        {now.zh.map(([label, body]) => (
+          <div style="display:flex; gap: var(--space-5); padding: var(--space-5) 0; border-top: 1px solid var(--border-hairline); align-items:baseline;">
+            <div style="font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-ink); flex: 0 0 84px;">{label}</div>
+            <div style="font-family: var(--font-reading); font-size: var(--text-md); color: var(--text-body); line-height: 1.6;">{body}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section style="display:flex; flex-wrap:wrap; gap: var(--space-5); justify-content: space-between; align-items:center; padding: var(--space-6); background: var(--surface-well); border-radius: var(--radius-lg);">
+      <div>
+        <div class="db-eyebrow" style="margin-bottom: 8px;">找到我</div>
+        <div style="display:flex; gap: var(--space-4); font-family: var(--font-mono); font-size: var(--text-sm);">
+          <TextLink href="https://github.com/dull-bird" title="占位链接，请替换为真实地址 · placeholder, replace with your real URL">GitHub</TextLink>
+          <TextLink href="#" title="占位链接，请替换为真实邮箱 · placeholder, replace with your real email">Email</TextLink>
+          <TextLink href={withBase('/feed.xml')}>RSS</TextLink>
+        </div>
+      </div>
+      <TextLink href={r.agents} style="font-family: var(--font-mono); font-size: var(--text-sm); color: var(--accent-ink);">给 AI agent 读 →</TextLink>
+    </section>
+  </main>
+</BaseLayout>

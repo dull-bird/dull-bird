@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BirdMark from '../../../components/brand/BirdMark.astro';
+import TextLink from '../../../components/core/TextLink.astro';
+import { profile, now } from '../../../data/site';
+import { routes } from '../../../lib/routes';
+import { withBase } from '../../../lib/base';
+
+const lang = 'en';
+const r = routes(lang);
+---
+
+<BaseLayout lang={lang} title="About" activeNav="about" description={profile.en.bio}>
+  <main class="db-reading" style="padding-top: var(--space-9); padding-bottom: var(--space-8);">
+    <div style="display:flex; align-items:center; gap: var(--space-5); margin-bottom: var(--space-6);">
+      <BirdMark variant="line" size={72} color="var(--accent)" />
+      <div>
+        <div class="db-eyebrow" style="margin-bottom: 6px;">About · 关于</div>
+        <h1 style="font-size: var(--text-3xl); letter-spacing: var(--tracking-tight);">Who is dull-bird</h1>
+      </div>
+    </div>
+
+    <div class="db-prose" data-lang={lang} style="margin-bottom: var(--space-9);">
+      <p>{profile.en.bio}</p>
+      <p>I believe technology is at its best when more people can use it, equally. So I keep my learning and thinking in the open — imperfect is fine, the point is to take off first.</p>
+    </div>
+
+    <section style="margin-bottom: var(--space-8);" id="now">
+      <div style="display:flex; align-items:baseline; gap: var(--space-3); margin-bottom: var(--space-2);">
+        <h2 style="font-size: var(--text-2xl);">Now</h2>
+        <span class="db-eyebrow">A snapshot that will age · updated June 2026</span>
+      </div>
+      <div style="display:flex; flex-direction:column;">
+        {now.en.map(([label, body]) => (
+          <div style="display:flex; gap: var(--space-5); padding: var(--space-5) 0; border-top: 1px solid var(--border-hairline); align-items:baseline;">
+            <div style="font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-ink); flex: 0 0 84px;">{label}</div>
+            <div style="font-family: var(--font-reading); font-size: var(--text-md); color: var(--text-body); line-height: 1.6;">{body}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section style="display:flex; flex-wrap:wrap; gap: var(--space-5); justify-content: space-between; align-items:center; padding: var(--space-6); background: var(--surface-well); border-radius: var(--radius-lg);">
+      <div>
+        <div class="db-eyebrow" style="margin-bottom: 8px;">Find me</div>
+        <div style="display:flex; gap: var(--space-4); font-family: var(--font-mono); font-size: var(--text-sm);">
+          <TextLink href="https://github.com/dull-bird" title="placeholder, replace with your real URL">GitHub</TextLink>
+          <TextLink href="#" title="placeholder, replace with your real email">Email</TextLink>
+          <TextLink href={withBase('/feed.xml')}>RSS</TextLink>
+        </div>
+      </div>
+      <TextLink href={r.agents} style="font-family: var(--font-mono); font-size: var(--text-sm); color: var(--accent-ink);">For AI agents →</TextLink>
+    </section>
+  </main>
+</BaseLayout>

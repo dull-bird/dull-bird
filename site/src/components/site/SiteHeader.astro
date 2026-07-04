@@ -1,0 +1,73 @@
+---
+// The site's top bar: wordmark on the left, nav + language/theme
+// controls on the right. Sticky, with a hairline that appears on scroll.
+import Wordmark from '../brand/Wordmark.astro';
+import LangToggle from './LangToggle.astro';
+
+interface NavItem { label: string; href: string; active?: boolean }
+
+interface Props {
+  lang: 'zh' | 'en';
+  homeHref: string;
+  nav: NavItem[];
+  langHrefs: { zh: string; en: string };
+  sticky?: boolean;
+}
+
+const { lang, homeHref, nav, langHrefs, sticky = true } = Astro.props;
+---
+
+<header class="db-header" data-sticky={sticky ? 'true' : undefined} id="site-header">
+  <div class="db-header__inner db-container">
+    <a class="db-header__brand" href={homeHref} aria-label="呆鸟小筑 · dull-bird">
+      <Wordmark lang={lang} size={19} markVariant="line" />
+    </a>
+
+    <nav class="db-header__nav" aria-label="Primary">
+      {nav.map((it) => (
+        <a href={it.href} class="db-header__link" data-active={it.active ? 'true' : undefined}>
+          {it.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="db-header__actions">
+      <LangToggle lang={lang} hrefs={langHrefs} />
+      <button
+        type="button"
+        class="db-header__theme"
+        id="theme-toggle"
+        aria-label={lang === 'zh' ? '切换深色 / 浅色' : 'Toggle dark / light'}
+      >
+        <span class="db-header__theme-icon db-header__theme-icon--light" aria-hidden="true">☀</span>
+        <span class="db-header__theme-icon db-header__theme-icon--dark" aria-hidden="true">☾</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .db-header__theme-icon--dark { display: none; }
+  :global(html[data-theme='dark']) .db-header__theme-icon--light { display: none; }
+  :global(html[data-theme='dark']) .db-header__theme-icon--dark { display: inline; }
+</style>
+
+<script>
+  const header = document.getElementById('site-header');
+  const onScroll = () => {
+    if (!header) return;
+    header.classList.toggle('is-scrolled', window.scrollY > 4);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const themeBtn = document.getElementById('theme-toggle');
+  themeBtn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('db-theme', next);
+    } catch {}
+  });
+</script>

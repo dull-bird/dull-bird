@@ -1,0 +1,25 @@
+---
+// The 中 / EN language switch. Real links to the other locale's version
+// of the current page — works with no JS, crawlable, agent-friendly.
+interface Props {
+  lang: 'zh' | 'en';
+  hrefs: { zh: string; en: string };
+  class?: string;
+}
+
+const { lang, hrefs, class: className } = Astro.props;
+const order: Array<'zh' | 'en'> = ['zh', 'en'];
+const labels = { zh: '中', en: 'EN' };
+---
+
+<div class={['db-langtoggle', className].filter(Boolean).join(' ')} role="group" aria-label="Language">
+  {order.map((k) => (
+    <a
+      href={hrefs[k]}
+      data-active={lang === k ? 'true' : undefined}
+      aria-current={lang === k ? 'true' : undefined}
+    >
+      {labels[k]}
+    </a>
+  ))}
+</div>

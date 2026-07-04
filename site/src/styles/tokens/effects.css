@@ -1,0 +1,42 @@
+/* ============================================================
+   dull-bird 呆鸟小筑 — Effects
+   Corner radii, hairline borders, and very soft warm shadows.
+   Elevation is expressed mostly by hairlines + whitespace, with
+   shadow reserved for genuinely floating things.
+   ============================================================ */
+
+:root {
+  /* Corner radii — soft & rounded, echoing the fluid line-bird */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   18px;
+  --radius-xl:   28px;
+  --radius-2xl:  40px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* Border widths */
+  --border-hair:  1px;
+  --border-thick: 1.5px;
+
+  /* Soft, warm-tinted shadows (ink at very low alpha) */
+  --shadow-xs: 0 1px 2px rgba(27, 26, 24, 0.04);
+  --shadow-sm: 0 1px 2px rgba(27, 26, 24, 0.05),
+               0 2px 6px rgba(27, 26, 24, 0.04);
+  --shadow-md: 0 2px 4px rgba(27, 26, 24, 0.04),
+               0 8px 24px rgba(27, 26, 24, 0.07);
+  --shadow-lg: 0 4px 8px rgba(27, 26, 24, 0.05),
+               0 18px 48px rgba(27, 26, 24, 0.10);
+
+  /* Focus ring */
+  --ring:        0 0 0 3px var(--accent-soft);
+  --ring-strong: 0 0 0 2px var(--accent);
+}
+
+[data-theme="dark"] {
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.45), 0 18px 48px rgba(0, 0, 0, 0.55);
+}

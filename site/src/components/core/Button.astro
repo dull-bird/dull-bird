@@ -1,0 +1,38 @@
+---
+// The primary action. Renders <a> when `href` is set, otherwise <button>.
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  disabled = false,
+  fullWidth = false,
+  type = 'button',
+  class: className,
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class={['db-btn', className].filter(Boolean).join(' ')}
+  data-variant={variant}
+  data-size={size}
+  data-full={fullWidth ? 'true' : undefined}
+  data-disabled={disabled ? 'true' : undefined}
+  href={href && !disabled ? href : undefined}
+  aria-disabled={href && disabled ? true : undefined}
+  disabled={!href && disabled ? true : undefined}
+  type={!href ? type : undefined}
+>
+  <span><slot /></span>
+</Tag>

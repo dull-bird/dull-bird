@@ -1,0 +1,44 @@
+---
+// The dove + name lockup: 呆鸟小筑 / dull-bird.
+import BirdMark from './BirdMark.astro';
+
+interface Props {
+  lang?: 'zh' | 'en';
+  size?: number;
+  showMark?: boolean;
+  markVariant?: 'line' | 'solid' | 'stroke';
+  orientation?: 'horizontal' | 'stacked';
+  tagline?: string;
+  style?: string;
+}
+
+const NAMES = { zh: '呆鸟小筑', en: 'dull-bird' };
+
+const {
+  lang = 'zh',
+  size = 22,
+  showMark = true,
+  markVariant = 'line',
+  orientation = 'horizontal',
+  tagline,
+  style,
+} = Astro.props;
+
+const label = NAMES[lang] ?? NAMES.zh;
+const isEn = lang === 'en';
+const stacked = orientation === 'stacked';
+
+const nameStyle = `font-family:${isEn ? 'var(--font-sans)' : 'var(--font-serif)'};font-size:${size}px;font-weight:var(--weight-medium);letter-spacing:${isEn ? '-0.02em' : '0.04em'};line-height:1;color:var(--text-heading);white-space:nowrap;`;
+
+const taglineStyle = `font-family:var(--font-mono);font-size:${Math.max(10, size * 0.42)}px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);line-height:1;margin-top:${stacked ? 6 : 3}px;`;
+---
+
+<span
+  style={`display:inline-flex;align-items:center;gap:${showMark ? Math.round(size * 0.6) : 0}px;color:var(--text-heading);${style ?? ''}`}
+>
+  {showMark && <BirdMark variant={markVariant} size={Math.round(size * 1.9)} />}
+  <span style="display:inline-flex;flex-direction:column;justify-content:center;">
+    <span style={nameStyle}>{label}</span>
+    {tagline && <span style={taglineStyle}>{tagline}</span>}
+  </span>
+</span>

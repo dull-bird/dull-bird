@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BirdMark from '../../components/brand/BirdMark.astro';
+import { profile } from '../../data/site';
+import { getPosts } from '../../lib/posts';
+import { llmsDoc, jsonLdDoc } from '../../lib/agentDoc';
+
+const lang = 'zh';
+const posts = await getPosts(lang);
+const llms = llmsDoc(lang, profile.zh.bio, posts, Astro.site!);
+const json = jsonLdDoc(lang, profile.zh.bio, posts, Astro.site!);
+---
+
+<BaseLayout lang={lang} title="给 AI agent 的视图" activeNav="agents" description="同样的内容，为自动化读者整理。">
+  <main class="db-container" style="padding-top: var(--space-8); padding-bottom: var(--space-8); max-width: 880px;">
+    <div style="display:flex; align-items:flex-start; gap: var(--space-4); margin-bottom: var(--space-6);">
+      <BirdMark variant="stroke" size={40} color="var(--accent)" />
+      <div style="flex:1;">
+        <div class="db-eyebrow" style="margin-bottom: 6px;">机器可读 · For agents</div>
+        <h1 style="font-size: var(--text-2xl); letter-spacing: var(--tracking-tight); margin-bottom: var(--space-3);">给 AI agent 的视图</h1>
+        <p style="font-family: var(--font-reading); font-size: var(--text-md); color: var(--text-body); line-height: 1.6; max-width: 60ch;">
+          同样的内容，为自动化读者整理。稳定链接、清晰语义、可直接抓取——主动兼容，而非被爬。
+        </p>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-3);">
+      <div class="db-langtoggle" role="group" aria-label="Format">
+        <button data-format-toggle="llms" data-active="true">llms.txt</button>
+        <button data-format-toggle="json">JSON-LD</button>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint);" data-format-caption="llms">
+        GET /llms.txt · 200 OK · text/markdown
+      </span>
+      <span style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint);" data-format-caption="json" hidden>
+        GET / · &lt;script type=application/ld+json&gt;
+      </span>
+    </div>
+
+    <pre
+      data-format-panel="llms"
+      style="margin:0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.7; color: var(--text-body); background: var(--surface-well); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: var(--space-6); overflow: auto; white-space: pre-wrap; word-break: break-word;"
+    ><code>{llms}</code></pre>
+    <pre
+      data-format-panel="json"
+      hidden
+      style="margin:0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.7; color: var(--text-body); background: var(--surface-well); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: var(--space-6); overflow: auto; white-space: pre-wrap; word-break: break-word;"
+    ><code>{json}</code></pre>
+
+    <p style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-faint); margin-top: var(--space-4);">
+      每个页面都带有语义 HTML 与 JSON-LD；agent 可跟随链接抓取全文。
+    </p>
+  </main>
+</BaseLayout>
+
+<script src="../../scripts/format-toggle.js"></script>

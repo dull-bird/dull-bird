@@ -1,0 +1,49 @@
+/* ============================================================
+   dull-bird 呆鸟小筑 — Motion
+   Smooth, flowing, organic easing — like the single line that
+   draws the bird. No bounces, no snappy overshoots.
+   ============================================================ */
+
+:root {
+  /* Easing */
+  --ease-organic: cubic-bezier(0.22, 1, 0.36, 1);   /* @kind other */
+  --ease-soft:    cubic-bezier(0.4, 0, 0.2, 1);     /* @kind other */
+  --ease-inout:   cubic-bezier(0.65, 0, 0.35, 1);   /* @kind other */
+  --ease-line:    cubic-bezier(0.65, 0.05, 0.36, 1);/* @kind other */
+
+  /* Durations */
+  --dur-instant: 90ms;    /* @kind other */
+  --dur-fast:    160ms;   /* @kind other */
+  --dur-base:    280ms;   /* @kind other */
+  --dur-slow:    520ms;   /* @kind other */
+  --dur-accent:  700ms;   /* @kind other */
+  --dur-draw:    1600ms;  /* @kind other */
+
+  /* Ready-made transitions */
+  --t-colors: color var(--dur-fast) var(--ease-soft),
+              background-color var(--dur-fast) var(--ease-soft),
+              border-color var(--dur-fast) var(--ease-soft); /* @kind other */
+  --t-accent: --accent-h var(--dur-accent) var(--ease-organic); /* @kind other */
+  --t-lift:   transform var(--dur-base) var(--ease-organic),
+              box-shadow var(--dur-base) var(--ease-organic); /* @kind other */
+}
+
+/* Line-bird self-draw */
+@keyframes db-draw { to { stroke-dashoffset: 0; } }
+
+/* Gentle upward reveal for editorial content */
+@keyframes db-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0ms; /* @kind other */
+    --dur-fast: 0ms; /* @kind other */
+    --dur-base: 0ms; /* @kind other */
+    --dur-slow: 0ms; /* @kind other */
+    --dur-accent: 0ms; /* @kind other */
+    --dur-draw: 0ms; /* @kind other */
+  }
+}

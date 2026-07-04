@@ -1,0 +1,54 @@
+/* ============================================================
+   dull-bird 呆鸟小筑 — Typography
+   Serif for reading & display · Sans for UI · Mono for code/agent.
+   Bilingual: each stack falls back to a Noto SC face for Chinese.
+   ============================================================ */
+
+:root {
+  /* --- Font families --- */
+  --font-serif: "Newsreader", "Noto Serif SC", Georgia, "Songti SC", serif;
+  --font-sans:  "Hanken Grotesk", "Noto Sans SC", system-ui, "PingFang SC", sans-serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", "Noto Sans SC", monospace;
+
+  /* Semantic roles */
+  --font-display: var(--font-serif);  /* big titles, hero */
+  --font-reading: var(--font-serif);  /* essay body */
+  --font-ui:      var(--font-sans);   /* nav, buttons, labels */
+  --font-code:    var(--font-mono);   /* code, timestamps, agent view */
+
+  /* --- Type scale (rem, 16px base) --- */
+  --text-xs:   0.75rem;   /* 12 — mono labels, fine print */
+  --text-sm:   0.875rem;  /* 14 — captions, meta */
+  --text-base: 1rem;      /* 16 — UI default */
+  --text-md:   1.125rem;  /* 18 — essay body */
+  --text-lg:   1.375rem;  /* 22 — lead, subheads */
+  --text-xl:   1.75rem;   /* 28 — h3 */
+  --text-2xl:  2.25rem;   /* 36 — h2 */
+  --text-3xl:  3rem;      /* 48 — h1 */
+  --text-4xl:  4rem;      /* 64 — hero */
+  --text-5xl:  5.5rem;    /* 88 — display */
+
+  /* --- Line heights --- */
+  --leading-none:    1;
+  --leading-tight:   1.12;   /* display / hero */
+  --leading-snug:    1.3;    /* headings */
+  --leading-normal:  1.55;   /* UI */
+  --leading-reading: 1.72;   /* Latin prose */
+  --leading-cjk:     1.9;    /* Chinese prose — needs more air */
+
+  /* --- Weights --- */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+
+  /* --- Tracking --- */
+  --tracking-tight:  -0.02em;  /* display serif */
+  --tracking-snug:   -0.01em;  /* headings */
+  --tracking-normal: 0;
+  --tracking-wide:   0.14em;   /* mono eyebrows, caps labels */
+
+  /* --- Reading measure --- */
+  --measure:      68ch;
+  --measure-cjk:  38em;
+}

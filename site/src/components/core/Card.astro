@@ -1,0 +1,24 @@
+---
+// A warm paper surface. Renders <a> when `href` is set (the whole card
+// becomes a hover-lifting link), otherwise a <div>.
+interface Props {
+  href?: string;
+  flat?: boolean;
+  interactive?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const { href, flat = false, interactive = false, class: className, style } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+  href={href}
+  class={['db-card', className].filter(Boolean).join(' ')}
+  data-flat={flat ? 'true' : undefined}
+  data-interactive={interactive ? 'true' : undefined}
+  style={style}
+>
+  <slot />
+</Tag>

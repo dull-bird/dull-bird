@@ -1,0 +1,79 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Prose from '../../components/content/Prose.astro';
+import Callout from '../../components/content/Callout.astro';
+import Tag from '../../components/core/Tag.astro';
+import PostMeta from '../../components/content/PostMeta.astro';
+import BirdMark from '../../components/brand/BirdMark.astro';
+import TextLink from '../../components/core/TextLink.astro';
+import { getPosts } from '../../lib/posts';
+import { routes, postHref } from '../../lib/routes';
+
+const lang = 'zh';
+
+export async function getStaticPaths() {
+  const posts = await getPosts('zh');
+  return posts.map((post) => ({ params: { slug: post.data.postSlug }, props: { post } }));
+}
+
+const { post } = Astro.props as Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
+const { Content } = await render(post);
+
+const posts = await getPosts(lang);
+const idx = posts.findIndex((p) => p.data.postSlug === post.data.postSlug);
+const next = posts[(idx + 1) % posts.length];
+const r = routes(lang);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  about: post.data.topic,
+  datePublished: post.data.date.toISOString().slice(0, 10),
+  timeRequired: `PT${post.data.reading}M`,
+  inLanguage: lang,
+  author: { '@type': 'Person', name: 'dull-bird' },
+  url: new URL(postHref(lang, post.data.postSlug), Astro.site).toString(),
+};
+
+const langHrefs = { zh: postHref('zh', post.data.postSlug), en: postHref('en', post.data.postSlug) };
+---
+
+<BaseLayout lang={lang} title={post.data.title} description={post.data.lede} activeNav="writing" langHrefs={langHrefs} jsonLd={jsonLd}>
+  <main class="db-reading" style="padding-top: var(--space-8); padding-bottom: var(--space-8);">
+    <TextLink muted href={r.writing} style="font-family: var(--font-mono); font-size: var(--text-sm);">← 全部文章</TextLink>
+
+    <header style="margin: var(--space-6) 0 var(--space-7);">
+      <div style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-4);">
+        <Tag variant="accent">{post.data.topic}</Tag>
+        <PostMeta date={post.data.date} readingTime={post.data.reading} lang={lang} />
+      </div>
+      <h1 style="font-size: var(--text-3xl); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); margin-bottom: var(--space-4);">
+        {post.data.title}
+      </h1>
+      <p style="font-family: var(--font-reading); font-size: var(--text-lg); color: var(--text-muted); line-height: var(--leading-snug); font-style: italic;">
+        {post.data.lede}
+      </p>
+    </header>
+
+    <Prose lang={lang}>
+      <Content />
+    </Prose>
+
+    <Callout title="呆鸟按" style="margin: var(--space-8) 0;">
+      笨鸟先飞——与其等技术普及，不如现在就把想法分享出来。
+    </Callout>
+
+    <a
+      href={postHref(lang, next.data.postSlug)}
+      style="display:flex; align-items:center; gap: var(--space-4); margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--border-hairline); text-decoration:none; color:inherit;"
+    >
+      <BirdMark variant="stroke" size={30} color="var(--accent)" />
+      <div>
+        <div class="db-eyebrow" style="margin-bottom: 4px;">下一篇</div>
+        <div style="font-family: var(--font-display); font-size: var(--text-lg); color: var(--text-heading);">{next.data.title}</div>
+      </div>
+    </a>
+  </main>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+// A small topic / metadata pill in mono. Renders <a> when `href` is set.
+interface Props {
+  variant?: 'default' | 'accent' | 'bare';
+  href?: string;
+  class?: string;
+}
+
+const { variant = 'default', href, class: className } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+
+<Tag
+  href={href}
+  class={['db-tag', className].filter(Boolean).join(' ')}
+  data-variant={variant !== 'default' ? variant : undefined}
+>
+  <slot />
+</Tag>

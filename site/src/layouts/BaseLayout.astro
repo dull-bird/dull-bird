@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import { routes, type Lang } from '../lib/routes';
+import { withBase } from '../lib/base';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+  activeNav?: 'writing' | 'about' | 'agents';
+  /** Override the language-toggle targets, e.g. an article's sibling slug. */
+  langHrefs?: { zh: string; en: string };
+  jsonLd?: Record<string, unknown>;
+}
+
+const { lang, title, description, activeNav, langHrefs, jsonLd } = Astro.props;
+const otherLang: Lang = lang === 'zh' ? 'en' : 'zh';
+const r = routes(lang);
+
+const navKey = (activeNav ?? 'home') as 'writing' | 'about' | 'agents' | 'home';
+const resolvedLangHrefs = langHrefs ?? {
+  [lang]: Astro.url.pathname,
+  [otherLang]: routes(otherLang)[navKey],
+} as { zh: string; en: string };
+
+const navLabels: Array<{ key: 'writing' | 'about' | 'agents'; zh: string; en: string }> = [
+  { key: 'writing', zh: '文章', en: 'Writing' },
+  { key: 'about', zh: '关于', en: 'About' },
+  { key: 'agents', zh: '给 AI', en: 'For AI' },
+];
+const nav = navLabels.map((n) => ({
+  label: lang === 'zh' ? n.zh : n.en,
+  href: r[n.key],
+  active: activeNav === n.key,
+}));
+
+const siteTitle = lang === 'zh' ? '呆鸟小筑 · dull-bird' : 'dull-bird · 呆鸟小筑';
+const fullTitle = title ? `${title} · ${siteTitle}` : siteTitle;
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  {description && <meta name="description" content={description} />}
+
+  <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+  <link rel="alternate" hreflang="zh" href={new URL(routes('zh').home, Astro.site)} />
+  <link rel="alternate" hreflang="en" href={new URL(routes('en').home, Astro.site)} />
+  <link rel="alternate" type="application/rss+xml" title="呆鸟小筑 · dull-bird" href={withBase('/feed.xml')} />
+
+  {jsonLd && (
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  )}
+
+  <script is:inline>
+    // Blocking (runs before first paint) so there's no light/dark flash.
+    (function () {
+      try {
+        var saved = localStorage.getItem('db-theme');
+        var theme = saved === 'dark' || saved === 'light'
+          ? saved
+          : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <SiteHeader lang={lang} homeHref={r.home} nav={nav} langHrefs={resolvedLangHrefs} />
+  <slot />
+  <SiteFooter
+    lang={lang}
+    writingHref={r.writing}
+    aboutHref={r.about}
+    agentsHref={r.agents}
+    feedHref={withBase('/feed.xml')}
+  />
+
+  <script src="../scripts/accent.js"></script>
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.dullbirdAccent) window.dullbirdAccent.init({ mode: 'next' });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+/* ============================================================
+   dull-bird 呆鸟小筑 — global stylesheet entry point
+   Ported from the Claude Design handoff (project/styles.css).
+   Import order preserved; nothing inlined here.
+   ============================================================ */
+
+@import "./fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/motion.css";
+@import "./tokens/effects.css";
+@import "./tokens/base.css";
+@import "./components.css";
