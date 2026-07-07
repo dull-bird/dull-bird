@@ -106,6 +106,11 @@ g_\beta(x)
 \frac{\log(1+\exp(\beta x))}{\beta}.
 $$
 
+<figure>
+  <img src="/assets/papers/original/eit-softplus-approximation.jpg" alt="Original paper figure: Softplus approximations to a ReLU penalty under different beta values" />
+  <figcaption>Original figure extracted from the paper PDF. The blue curve is the nonsmooth ReLU penalty. The green, orange, and red curves are Softplus approximations. A larger β makes Softplus closer to ReLU; a smaller β gives a smoother training signal.</figcaption>
+</figure>
+
 When CVaR exceeds a threshold $c$, the penalty is:
 
 $$
@@ -180,11 +185,26 @@ $$
 \omega_{p,t}\boldsymbol w_{S,t}.
 $$
 
+<figure>
+  <img src="/assets/papers/original/eit-transaction-cost-comparison.jpg" alt="Original paper figure: allocation paths under different transaction cost settings" />
+  <figcaption>Original figure extracted from the paper PDF. The transaction cost ρ changes the decision problem: the model must ask not only which allocation looks best next, but whether moving from the current allocation is worth the cost.</figcaption>
+</figure>
+
 The key design choice is not "make the network bigger." It is to split the financial problem into interpretable roles: long-run regime, short-run opportunity, risk gating, and cost-aware memory.
 
 ## What the results mean
 
 The paper tests the method on S&P 500, S&P 100, FTSE 100, and Nikkei 225 settings. Overall, the proposed structure often improves the trade-off among tracking error, excess return, downside risk, and transaction costs compared with rolling optimization baselines.
+
+<figure>
+  <img src="/assets/papers/original/eit-sp500-long-history.jpg" alt="Original paper figure: long-run S&P 500 path with market-regime background shading" />
+  <figcaption>Original figure extracted from the paper PDF. The background colors mark different market regimes. This explains why regime information matters: the same index calls for different behavior in bull, bear, and unstable periods.</figcaption>
+</figure>
+
+<figure>
+  <img src="/assets/papers/original/eit-sp500-wealth-comparison.jpg" alt="Original paper figure: wealth paths for S&P 500 experiments across neural-network and rolling-optimization methods" />
+  <figcaption>Original figure extracted from the paper PDF. The vertical axis can be read as how much one invested dollar becomes. The important question is not only which line ends highest, but also how much drawdown, benchmark deviation, and hidden risk it takes to get there.</figcaption>
+</figure>
 
 The most intuitive result appears around the 2020 market crash. The model shifts toward safer allocations, including cash-like exposure, instead of blindly staying aggressive. In other words, the value is not only "earning more"; it is also avoiding large mistakes in stressed regimes.
 

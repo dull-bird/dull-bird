@@ -106,6 +106,11 @@ g_\beta(x)
 \frac{\log(1+\exp(\beta x))}{\beta}.
 $$
 
+<figure>
+  <img src="/assets/papers/original/eit-softplus-approximation.jpg" alt="论文原图：不同 beta 参数下 Softplus 对 ReLU 惩罚函数的近似" />
+  <figcaption>论文 PDF 原图。蓝线是不可导的 ReLU 惩罚，绿色、橙色、红色是不同 β 下的 Softplus 平滑近似。β 越大，曲线越像 ReLU；β 较小时更平滑，训练也更稳定。</figcaption>
+</figure>
+
 当组合的 CVaR 超过阈值 $c$ 时，惩罚项是：
 
 $$
@@ -180,11 +185,26 @@ $$
 \omega_{p,t}\boldsymbol w_{S,t}.
 $$
 
+<figure>
+  <img src="/assets/papers/original/eit-transaction-cost-comparison.jpg" alt="论文原图：不同交易成本设定下模型和滚动优化基线的权重路径对比" />
+  <figcaption>论文 PDF 原图。这里可以直观看到交易成本 ρ 的作用：如果换仓要付钱，模型就不能只看“下一期哪个资产最好”，还要考虑“从现在仓位换过去值不值”。memory block 的金融含义就在这里。</figcaption>
+</figure>
+
 所以这篇论文的一个核心设计不是“网络越大越好”，而是把金融问题拆成几个可解释的小部件：长期状态、短期机会、风险控制、成本记忆。
 
 ## 结果怎么看
 
 论文在 S&P 500、S&P 100、FTSE 100、Nikkei 225 等指数上做了样本外测试。整体结果支持一个结论：这个结构通常能比传统滚动优化基线更好地平衡跟踪误差、超额收益、下行风险和交易成本。
+
+<figure>
+  <img src="/assets/papers/original/eit-sp500-long-history.jpg" alt="论文原图：2000 年到 2022 年 S&P 500 指数的长期走势和市场状态背景" />
+  <figcaption>论文 PDF 原图。背景色对应不同市场状态。先看这张图能帮助理解为什么模型需要 regime：同一个指数在牛市、熊市和震荡期里的最优行为不是一回事。</figcaption>
+</figure>
+
+<figure>
+  <img src="/assets/papers/original/eit-sp500-wealth-comparison.jpg" alt="论文原图：S&P 500 实验中不同神经网络模型与滚动优化基线的财富路径对比" />
+  <figcaption>论文 PDF 原图。纵轴可以理解成“1 块钱最后变成多少”。黑线是指数，彩色线是不同策略。读这类图时不要只看谁最高，还要看回撤、是否贴近指数，以及是否靠承担更大风险换收益。</figcaption>
+</figure>
 
 最值得注意的是 2020 年市场下跌阶段。模型会明显转向现金或更保守的仓位，这就是所谓 flight to safety。换句话说，模型的价值不只是“多赚一点”，还包括在极端时期少犯大错。
 
