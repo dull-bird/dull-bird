@@ -29,31 +29,29 @@ links:
     url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4062101
 ---
 
-## In plain language
+## The Problem
 
-When a trader sells or holds an option, they often hedge it by trading the underlying assets. Ideally, the hedging portfolio offsets the option payoff at maturity. Real markets are messier: there may be many assets, long horizons, changing volatility, and changing correlations.
+This paper does not propose a new hedging algorithm. It systematically evaluates three deep learning architectures for quadratic hedging: Multi-net, Single-net, and RNN. The main question is which architecture is more reliable for high-dimensional, long-horizon dynamic hedging.
 
-Quadratic hedging has a simple goal: minimize the squared hedging error at maturity. Squaring the error means large mistakes are punished heavily.
-
-This paper asks a practical question: if we use neural networks to learn a dynamic hedging strategy, which architecture should we trust?
+The second contribution is a model-free moving block bootstrap method for generating training data from historical paths, together with an empirical study of how block size affects the result.
 
 <figure>
   <img src="/assets/papers/qh-loss-grid.svg" alt="Quadratic hedging benchmark design over asset dimension, maturity, market model, and architecture" />
-  <figcaption>The paper is a benchmark. It varies dimensionality, horizon, market dynamics, and neural architecture instead of relying on one easy case. This figure is redrawn from the experimental design.</figcaption>
+  <figcaption>A redrawn diagram of the benchmark design. The paper varies dimension, horizon, market model, and architecture rather than relying on a single easy case.</figcaption>
 </figure>
 
-## The quadratic hedging loss
+## Objective
 
 Let there be $d$ underlying assets with price vector $\boldsymbol S_t\in\mathbb R^d$. The hedging position at time $t$ is $\boldsymbol q_t\in\mathbb R^d$, and the initial capital is $v$. Terminal hedging wealth is:
 
 $$
-V_T
+V_t
 =
 v
 +
-\sum_{t=0}^{T-1}
-\boldsymbol q_t^\top
-(\boldsymbol S_{t+1}-\boldsymbol S_t).
+\sum_{i=0}^{t-1}
+\boldsymbol q_i^\top
+(\boldsymbol S_{i+1}-\boldsymbol S_i).
 $$
 
 The payoff used in the experiments is a European basket call:
@@ -68,7 +66,7 @@ F_T
 \right)^+.
 $$
 
-Quadratic hedging minimizes the mean squared terminal hedging error:
+Quadratic hedging minimizes the mean squared terminal hedging error under the real-world probability measure:
 
 $$
 \min_{v,\boldsymbol q_0,\ldots,\boldsymbol q_{T-1}}
@@ -78,7 +76,7 @@ $$
 \right].
 $$
 
-If a neural network with parameters $\theta$ outputs each hedge, then:
+If a neural network outputs each hedge, then:
 
 $$
 \boldsymbol q_t
@@ -86,7 +84,7 @@ $$
 f_\theta(X_t),
 $$
 
-where $X_t$ is the state observable at time $t$. Training uses sample average approximation:
+where $X_t$ is the observable state at time $t$. Training uses sample average approximation:
 
 $$
 \widehat L(\theta)
@@ -104,7 +102,7 @@ $$
 \right)^2.
 $$
 
-All architectures solve this same objective. The difference is how they represent $\boldsymbol q_t$.
+All architectures solve this same objective. The difference is how they represent $\boldsymbol q_t$. To isolate architecture effects, the main problem does not include transaction costs or position constraints.
 
 ## The three architectures
 
@@ -121,7 +119,7 @@ $$
 f_t(X_t;\theta_t).
 $$
 
-It is flexible, but its parameter count grows linearly with the horizon $T$. Longer maturity means more networks and a higher risk of overfitting.
+It has the most flexibility, but its parameter count grows linearly with the horizon $T$. The paper finds that this causes overfitting and training instability in high-dimensional, long-horizon settings.
 
 **Single-net** uses one shared network and gives normalized time as an input:
 
@@ -131,7 +129,7 @@ $$
 f(X_t,t/T;\theta).
 $$
 
-It is like one trader who learns to adjust behavior depending on the date. It has far fewer parameters and trains faster.
+Its parameter count does not grow with $T$, making it the smallest and fastest of the three architectures.
 
 **RNN** reads the history of returns. With log return $\boldsymbol\xi_t$ and hidden state $\boldsymbol z_t$:
 
@@ -145,38 +143,44 @@ $$
 f^C(\boldsymbol z_t,\tilde X_t;\theta^C).
 $$
 
-For a non-specialist, Multi-net is many different traders, Single-net is one trader who knows the date, and RNN is one trader who remembers the path.
+The paper uses GRU rather than LSTM, since LSTM did not bring clear improvement and was slower. A key design choice is to feed log returns $\boldsymbol\xi_t$ into the RNN cell rather than prices $\boldsymbol S_t$, then use a ControlNet to map the hidden state to the hedge.
 
-## Why RNN matters
+## Market Models
 
-In a simplified Black-Scholes world, current prices contain enough information for the next decision. In more realistic settings such as DCC-GARCH, volatility clusters and correlations evolve over time. The market state depends on history.
+The paper uses two data-generating models.
 
-Those hidden states are not directly visible in real trading. RNNs are useful because they can extract part of that state from past returns.
+**Black-Scholes.** Log returns are i.i.d. multivariate normal. In this setting, the price process is relatively simple and $\boldsymbol S_t$ can serve as a Markov state.
 
-The experiments show that RNNs usually have the lowest test loss in high-dimensional, long-horizon, and nonstationary settings. In DCC-GARCH experiments, the RNN can approach or even outperform networks that are given hidden covariance information directly. That is strong evidence that memory is doing real work.
+**DCC-GARCH.** Volatility and correlation evolve over time, producing volatility clustering, fat tails, and changing correlations. In this setting, prices alone do not fully describe the state, and the hidden covariance state is not directly observable in real trading.
 
-## Why Single-net also matters
+This is why RNN is relevant: when the market state depends on historical returns, an RNN may extract part of the hidden state from $\boldsymbol\xi_{1:t}$.
 
-RNN is powerful, but Single-net is valuable as an engineering baseline. It is small, fast, stable, and often only slightly worse than RNN.
+## Experimental Design
 
-That matters in real systems. The most accurate research model is not always the first model you should deploy. If you need a robust baseline, Single-net is often the conservative starting point.
+The benchmark varies asset dimension $d\in\{1,10,100\}$, maturity $T\in\{20,60,120,250\}$, and market model. Each setting compares Multi-net, Single-net, and RNN.
 
-## What makes the benchmark useful
+Training uses PyTorch, Adam, minibatches, validation selection, and gradient clipping. The paper also applies several stabilization steps: using $\log(S_t)$ instead of $S_t$, standardizing features, using $v/d$ as a training parameter, and dividing the loss by $d^2$ so that the same training setup can work across dimensions.
 
-The study does not rely on one easy example. It tests asset dimensions from 1 to 100, maturities from roughly one month to one year, and both Black-Scholes and DCC-GARCH data-generating models.
+Risk-neutral price $p$ and initial delta $\Delta_0$ are used as references. The paper emphasizes that they are not the true answers to this real-world-measure quadratic hedging problem, especially under incomplete DCC-GARCH dynamics.
 
-It compares training loss, validation loss, test loss, speed, parameter count, overfitting, learned initial cost, and learned initial hedge. That is why the paper is best read as a systematic benchmark.
+## Main Findings
 
-It also studies moving block bootstrap training data, a model-free way to resample historical paths. This part asks how much temporal dependence to preserve when generating training samples from limited market history.
+**In low dimension, the architectures are similar.** For $d=1$, the three methods converge to similar training and test loss. The differences appear mainly in high-dimensional and long-horizon settings.
 
-## The most interesting result
+**Multi-net overfits.** Its parameter count grows with $T$. In large settings such as $d=100,T=250$, it reaches millions of parameters, and validation loss can be much higher than training loss. Training is also unstable under DCC-GARCH.
 
-In high dimensions, the learned initial cost and hedge can differ significantly from the classic risk-neutral price and delta hedge. That is not because the classic formulas are simply wrong. They solve a different target.
+**RNN usually has the lowest test loss.** The advantage is especially clear under DCC-GARCH. The paper explains this by the RNN's ability to extract information about unobservable dynamic covariance states from historical returns.
 
-Delta hedging is about replication in a risk-neutral framework. This paper optimizes mean squared hedging error under the real-world probability measure. In incomplete, high-dimensional, changing markets, those objectives can diverge.
+**Single-net is a strong baseline.** It is small, fast, and resistant to overfitting, and in many cases its test loss is only slightly worse than RNN. The paper therefore compares accuracy and stability rather than claiming that RNN dominates every practical consideration.
 
-## Limitations
+**Learned $v$ and $\boldsymbol q_0$ can differ from risk-neutral price and delta.** In high dimensions, the learned initial capital and hedge can deviate substantially from $p$ and $\Delta_0$. The paper's point is not that classical formulas are wrong, but that they solve a different objective.
 
-To isolate architecture effects, the main experiments omit transaction costs and position constraints. That is a reasonable simplification for a benchmark, but it also means the setup is not yet a full trading system.
+## Moving Block Bootstrap
 
-My takeaway: the paper is not saying "RNN is always best." It shows that when the true state is only partially observable and changes through time, memory is itself a modeling advantage.
+The paper also studies model-free training data generation. It samples moving blocks of length $b$ from a historical path and concatenates them to create training paths.
+
+The block size controls the trade-off. When $b=1$, the method becomes IID bootstrap. Larger $b$ preserves more temporal dependence, but it reduces sample diversity. In the paper's DCC-GARCH study, small block sizes, including $b=1$, give the best RMSE for $v/d$ and $\boldsymbol q_0$. RNN also has lower $\boldsymbol q_0$ estimation error than Single-net under small blocks.
+
+## My Discussion
+
+My own interpretation belongs here. The paper's value is not that it proposes a new hedger, but that it gives a careful architecture benchmark. It shows that memory helps when market state is partially observable and time-varying, while Single-net remains an important simple and stable baseline. The omission of transaction costs and position constraints is intentional for isolating architecture effects, but it also means the setup is not a complete trading system.

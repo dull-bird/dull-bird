@@ -27,20 +27,20 @@ links:
     url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4461741
 ---
 
-## In plain language
+## The Problem
 
-A normal index fund tries to behave like an index. If the index rises 1%, the fund should rise about 1% too. Enhanced index tracking adds a harder ambition: stay close to the index, but earn a little more if possible.
+The paper studies enhanced index tracking. Standard index tracking only asks a portfolio to stay close to a benchmark index. Enhanced index tracking adds a return objective: generate positive excess return while keeping tracking error under control.
 
-That is harder than it sounds. Extra return usually requires deviating from the index. Deviate too much, and tracking error grows. Trade too often, and transaction costs eat the gains. Take too much risk, and the fund may look good in calm markets but fail exactly when investors need protection.
+The paper does not let the model freely search the whole market. It first selects the top-$n$ large-cap constituents of the index by market capitalization, then learns how to dynamically allocate weights among these stocks and cash. The main problem is dynamic weighting, not stock-universe discovery.
 
-This paper asks whether a deep learning model can learn a dynamic rebalancing rule that balances all of these goals at once.
+The problem is formulated as a stochastic control problem and solved by deep learning. The model must handle tracking error, excess return, a CVaR downside-risk constraint, and transaction costs.
 
 <figure>
   <img src="/assets/papers/eit-loss.svg" alt="Enhanced index tracking loss components: tracking error, excess return, CVaR penalty, and trading cost" />
-  <figcaption>Enhanced index tracking is not a single-objective problem. This redrawn figure shows the four tensions behind the training objective.</figcaption>
+  <figcaption>A redrawn diagram of the paper's formulation. Tracking error and excess return define the main objective; CVaR enters as a downside-risk constraint; transaction cost enters the portfolio dynamics and realized return.</figcaption>
 </figure>
 
-## The loss function
+## Loss And Constraints
 
 Let $r_{I,t}$ be the index return and $r_{P,t}$ be the portfolio return. Plain index tracking focuses on tracking error:
 
@@ -61,7 +61,7 @@ L_{\mathrm{ER}}
 \frac{1}{T}\sum_{t=1}^{T}(r_{P,t}-r_{I,t}).
 $$
 
-The basic objective is therefore:
+The EIT objective is:
 
 $$
 L_{\mathrm{EIT}}
@@ -72,18 +72,14 @@ L_{\mathrm{TE}}
 \qquad \lambda \ge 0.
 $$
 
-The first term should be small: the portfolio should remain close to the index. The second term has a minus sign: higher excess return lowers the loss. The parameter $\lambda$ controls how much tracking error the model may tolerate in exchange for extra return.
+Here $\lambda\ge 0$. When $\lambda=0$, the problem becomes ordinary index tracking. When $\lambda>0$, the objective rewards excess return.
 
-You can read $\lambda$ as a knob. When $\lambda=0$, the model only tries to track the index. As $\lambda$ becomes larger, the model becomes more willing to deviate from the index in exchange for excess return. In the paper's EIT experiments, we use $\lambda=20$. The number looks large because daily tracking error is around the $10^{-3}$ scale while daily excess return is around the $10^{-4}$ scale, so the two terms are not naturally on the same magnitude.
+In the EIT experiments, the paper uses $\lambda=20$. This is not an arbitrary attempt to overemphasize excess return. The IT experiment shows that daily tracking error is around the $10^{-3}$ scale while daily excess return is around the $10^{-4}$ scale. A relatively large $\lambda$ is used to balance the two objectives without underweighting the tracking objective.
 
 <figure>
   <img src="/assets/papers/original/eit-large-lambda-wealth-comparison.jpg" alt="Original paper figure: wealth paths in the enhanced index tracking experiment with lambda equal to 20" />
-  <figcaption>Original figure extracted from the paper PDF, Figure 5(b). This is the EIT setting with λ=20. The model puts much more weight on excess return: NN-ISR and NN-All rise far above the index, but the price is larger benchmark deviation and deeper downside risk.</figcaption>
+  <figcaption>Original figure extracted from the paper PDF, Figure 5(b). This is the EIT setting with λ=20. The paper's conclusion is that NN-ISR performs best in MER, Sharpe ratio, and CR. It also notes that EIT does not explicitly control risk: all policies have higher 95%-CVaR than the index, and MDD can be large.</figcaption>
 </figure>
-
-So $\lambda$ is not simply "the larger the better." A larger $\lambda$ rewards excess return more strongly, but without CVaR or another risk constraint the learned allocation can become aggressive. The later CVaR version is meant to keep that return-seeking behavior inside a risk-controlled boundary.
-
-## Constraints from real trading
 
 The portfolio contains $n$ stocks plus cash. Let $\boldsymbol w_t$ be the pre-trade weights and $\tilde{\boldsymbol w}_t$ be the post-trade weights. With proportional transaction cost $\rho$, the budget constraint is:
 
@@ -92,6 +88,16 @@ $$
 \left|\tilde w_{i,t}-w_{i,t}\right|
 =
 \sum_{i=0}^{n}\tilde w_{i,t}.
+$$
+
+The no-short-sale and no-leverage feasible set is:
+
+$$
+\left\{
+\tilde{\boldsymbol w}_{S,t}\in\mathbb R^n:
+1-\sum_{i=1}^n \tilde w_{i,t}\ge 0,
+\tilde w_{i,t}\ge 0
+\right\}.
 $$
 
 The next-period portfolio return is:
@@ -105,9 +111,9 @@ r_{P,t+1}
 \left|\tilde w_{i,t}-w_{i,t}\right|.
 $$
 
-This is why the model needs memory: if the new allocation is far from the current allocation, the cost appears directly in realized return.
+Thus, transaction cost is not an after-the-fact adjustment. It appears directly in the portfolio dynamics and realized return.
 
-The paper also adds a downside-risk constraint through CVaR. To make the penalty differentiable, it uses a softplus approximation:
+The paper also adds the CVaR constraint $\mathrm{CVaR}_\alpha(r_{P,t})\le c$. Since a ReLU-type penalty has zero gradient when the constraint is satisfied and changes sharply near the boundary, the paper uses a Softplus approximation:
 
 $$
 g_\beta(x)
@@ -117,10 +123,10 @@ $$
 
 <figure>
   <img src="/assets/papers/original/eit-softplus-approximation.jpg" alt="Original paper figure: Softplus approximations to a ReLU penalty under different beta values" />
-  <figcaption>Original figure extracted from the paper PDF. The blue curve is the nonsmooth ReLU penalty. The green, orange, and red curves are Softplus approximations. A larger β makes Softplus closer to ReLU; a smaller β gives a smoother training signal.</figcaption>
+  <figcaption>Original figure extracted from the paper PDF, Figure 1. A larger β makes Softplus closer to ReLU. Since Softplus stays above ReLU, especially near zero, the approximation imposes a stricter constraint.</figcaption>
 </figure>
 
-When CVaR exceeds a threshold $c$, the penalty is:
+The penalty is:
 
 $$
 P_{\mathrm{CVaR}}
@@ -143,15 +149,15 @@ L_{\mathrm{TE}}
 P_{\mathrm{CVaR}}.
 $$
 
-In nontechnical terms, every rebalance pays four bills: benchmark deviation, missed excess return, tail risk, and turnover.
+For the S&P 500 experiments, the paper sets $c=3\%$, $\alpha=5\%$, $\gamma=10^6$, and $\beta=2000$. The threshold $c=3\%$ is chosen because the 95%-CVaR of S&P 500 daily returns from 2000 to 2016 is around 3.0%. The choices of $\gamma$ and $\beta$ make the penalty comparable to $\hat L_{\mathrm{EIT}}$ while keeping the constraint strict.
 
-## The four-block architecture
+## Architecture And Features
 
-The network is intentionally structured, not just made large.
+The architecture is not a generic large feedforward network. It separates inputs and blocks according to financial meaning. The features include index regime probability, stock regime probability, short-term features, and current portfolio weights. Short-term features include recent means, volatilities, and beta-type information. Current weights allow the model to account for transaction cost.
 
 <figure>
   <img src="/assets/papers/eit-network.svg" alt="Four-block enhanced index tracking network: main, score, gate, and memory" />
-  <figcaption>A redrawn schematic of the paper's architecture. The main block handles regimes, the score block handles short-term stock signals, the gate block shrinks risky exposure, and the memory block controls turnover.</figcaption>
+  <figcaption>A redrawn schematic of the paper's architecture. The four blocks use regime information, short-term features, and current holdings to output stock weights.</figcaption>
 </figure>
 
 **The main block** learns bull and bear base allocations and mixes them using the index regime probability:
@@ -164,7 +170,7 @@ $$
 (1-\omega_{\mathrm{bull},t})\tilde{\boldsymbol w}_{\mathrm{bear}}.
 $$
 
-**The score block** reads short-term stock features, produces a short-term allocation $\tilde{\boldsymbol w}_{\mathrm{sc},t}$, and mixes it with the long-run allocation:
+**The score block** reads short-term stock features, produces a short-term allocation $\tilde{\boldsymbol w}_{\mathrm{sc},t}$, and mixes it with the main block output:
 
 $$
 \tilde{\boldsymbol w}_{2,t}
@@ -174,7 +180,7 @@ $$
 \omega_1 \tilde{\boldsymbol w}_{1,t}.
 $$
 
-**The gate block** reduces exposure when a stock or regime looks riskier:
+**The gate block** uses stock regime probabilities to scale proposed stock weights element by element:
 
 $$
 \tilde{\boldsymbol w}_{3,t}
@@ -184,7 +190,7 @@ $$
 \tilde{\boldsymbol w}_{2,t}.
 $$
 
-**The memory block** smooths rebalancing by mixing the proposed allocation with the current one:
+**The memory block** uses the distance between proposed and current weights to control the final rebalancing size:
 
 $$
 \tilde{\boldsymbol w}_{S,t}
@@ -196,37 +202,49 @@ $$
 
 <figure>
   <img src="/assets/papers/original/eit-transaction-cost-comparison.jpg" alt="Original paper figure: allocation paths under different transaction cost settings" />
-  <figcaption>Original figure extracted from the paper PDF. The transaction cost ρ changes the decision problem: the model must ask not only which allocation looks best next, but whether moving from the current allocation is worth the cost.</figcaption>
+  <figcaption>Original figure extracted from the paper PDF. In the paper's transaction-cost discussion, EIT and EIT-CVaR policies tend to rebalance more frequently, but the memory block smooths weight changes and helps control transaction costs.</figcaption>
 </figure>
 
-The key design choice is not "make the network bigger." It is to split the financial problem into interpretable roles: long-run regime, short-run opportunity, risk gating, and cost-aware memory.
+All blocks are small. The main, gate, and memory blocks have one hidden layer with five nodes; the score block has two hidden layers with five nodes each. The paper emphasizes this parsimonious and shared-parameter design as a way to reduce data insufficiency and keep training scalable.
 
-## What the results mean
+## Experiments And Results
 
-The paper tests the method on S&P 500, S&P 100, FTSE 100, and Nikkei 225 settings. Overall, the proposed structure often improves the trade-off among tracking error, excess return, downside risk, and transaction costs compared with rolling optimization baselines.
+The paper first evaluates IT, EIT, and EIT-CVaR on S&P 500, with $n=5$ and $n=20$ selected stocks, both without transaction cost and with $\rho=0.005$. It uses rolling expanding-window training: at the beginning of each year, regime models and neural networks are retrained on historical data and then tested for the next year. The rebalancing frequency is set to five trading days because it gives similar return and CVaR performance to daily rebalancing while reducing transaction costs.
 
 <figure>
   <img src="/assets/papers/original/eit-sp500-long-history.jpg" alt="Original paper figure: long-run S&P 500 path with market-regime background shading" />
-  <figcaption>Original figure extracted from the paper PDF. The background colors mark different market regimes. This explains why regime information matters: the same index calls for different behavior in bull, bear, and unstable periods.</figcaption>
+  <figcaption>Original figure extracted from the paper PDF. The background colors show regime information filtered from price data, which is later used as an input feature.</figcaption>
 </figure>
 
 <figure>
   <img src="/assets/papers/original/eit-sp500-wealth-comparison.jpg" alt="Original paper figure: wealth paths for S&P 500 experiments across neural-network and rolling-optimization methods" />
-  <figcaption>Original figure extracted from the paper PDF. The vertical axis can be read as how much one invested dollar becomes. The important question is not only which line ends highest, but also how much drawdown, benchmark deviation, and hidden risk it takes to get there.</figcaption>
+  <figcaption>Original figure extracted from the paper PDF, Figure 5(c), for EIT-CVaR. Compared with EIT, the CVaR constraint reduces risk. NN-ISR and NN-All still outperform RO in return measures such as MER, IR, Sharpe ratio, and CR.</figcaption>
 </figure>
 
-The most intuitive result appears around the 2020 market crash. The model shifts toward safer allocations, including cash-like exposure, instead of blindly staying aggressive. In other words, the value is not only "earning more"; it is also avoiding large mistakes in stressed regimes.
+The S&P 500 findings are layered.
 
-The result should not be read as "deep learning guarantees alpha." With a larger $\lambda$, the model does pursue excess return more aggressively and the wealth curve can look much better, but tracking error, CVaR, and maximum drawdown can also deteriorate. Adding CVaR sacrifices some return for better risk control. The Nikkei 225 experiments are also a useful warning: if the selected large-cap stocks themselves lag the index, the model cannot manufacture excess return from nowhere.
+**IT.** Plain index tracking is a regression-type problem. The RO baseline already constructs a strong tracking portfolio, so the room for improvement from neural networks is limited.
 
-## Why it matters beyond finance
+**EIT.** NN-ISR, which uses both index and stock regime probabilities, performs best in MER, Sharpe ratio, and CR. The paper also notes that EIT does not control risk: all policies have higher 95%-CVaR than the index, and MDD can be large.
 
-The transferable idea is dynamic trade-off management. In finance the trade-off is return, risk, tracking error, and trading cost. In robotics or AI systems, the same pattern may become accuracy, speed, stability, energy, and safety.
+**EIT-CVaR.** With the CVaR constraint, all policies keep 95%-CVaR below 3%, and MDD decreases substantially relative to EIT. In the five-stock case with transaction costs, the MDD of NN-ISR or NN-All is around 19%, much lower than S&P 500's 33.9%. This risk reduction comes at the cost of lower MER and CR.
 
-A useful model is not merely one that predicts better. It knows what it is optimizing, what it is sacrificing, and when it should become conservative.
+## Features And Transaction Costs
 
-## Limitations
+The paper's feature-importance conclusion is direct: short-term features matter most for IT, while both index and stock regime probabilities are important for EIT and EIT-CVaR. NN-ISR is best in most return measures, and its improvement over NN-IR shows the value of stock regime information.
 
-The method depends on historical market data and regime estimates, which are noisy and delayed in real time. The stock selection procedure also depends on market style; it worked better in some markets than others.
+The paper highlights the March 2020 market crash. NN-ISR holds considerably more cash than NN-IR. NN-IR perceives the bear market through the index regime, but NN-ISR also observes worsening stock regimes through the gate block and further reduces stock exposure. This is the paper's main example for why stock regimes matter.
 
-My takeaway: the lasting value is not a promise of guaranteed outperformance. It is the decision to put hidden market state and trading friction inside the model design instead of pretending they do not exist.
+For transaction costs, every neural-network policy has average transaction cost per trade of at most several basis points. EIT and EIT-CVaR policies rebalance more dramatically and frequently, so costs matter. But the neural-network policies using appropriate features still outperform RO, confirming that the memory block can effectively control transaction costs. The best-return policy, NN-ISR, is not the most costly one.
+
+## Cross-Market Results
+
+The paper further tests EIT-CVaR with transaction costs on S&P 100, FTSE 100, and Nikkei 225, with $n=5,20,40$. Training starts from 2003, testing covers 2019-2023, and the 95%-CVaR constraints are set to 3%, 2.7%, and 3.3%, respectively.
+
+Except for the five-stock cases of FTSE 100 and Nikkei 225, NN-ISR has lower test loss and higher CR and Sharpe ratio than RO. NN-ISR also has higher MER and IR in 8 out of 9 cases. The paper therefore argues that the improvement over RO is reasonably robust to changes in index and number of stocks.
+
+The Nikkei 225 case is the important warning. Both NN-ISR and RO fail to generate excess CR over the index. The paper gives two reasons: the selected large-cap Nikkei stocks perform poorly, and the CVaR constraint makes the strategy more conservative. The paper concludes that further work is needed on stock selection when large-cap stocks do not perform well.
+
+## My Discussion
+
+My own interpretation belongs here, separate from the paper's claims. The most reusable part of the paper is the explicit treatment of regime, downside risk, and transaction cost inside a dynamic allocation framework. It does not claim that deep learning guarantees excess return. The main risks are also clear: real-time regime identification is noisy, market-cap stock selection depends on market style, and excess return still depends on whether the selected stocks have enough performance.
