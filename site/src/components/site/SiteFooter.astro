@@ -6,13 +6,14 @@ import BirdMark from '../brand/BirdMark.astro';
 interface Props {
   lang: 'zh' | 'en';
   writingHref: string;
+  papersHref: string;
   aboutHref: string;
   projectsHref: string;
   agentsHref: string;
   feedHref: string;
 }
 
-const { lang, writingHref, aboutHref, projectsHref, agentsHref, feedHref } = Astro.props;
+const { lang, writingHref, papersHref, aboutHref, projectsHref, agentsHref, feedHref } = Astro.props;
 
 const line = lang === 'zh'
   ? '未来已来，只是分布不均。'
@@ -20,12 +21,12 @@ const line = lang === 'zh'
 
 const cols = lang === 'zh'
   ? [
-      { title: '站内', links: [['文章', writingHref], ['关于 · 此刻', aboutHref], ['项目', projectsHref]] },
+      { title: '站内', links: [['文章', writingHref], ['论文', papersHref], ['关于 · 此刻', aboutHref], ['项目', projectsHref]] },
       { title: '订阅', links: [['RSS', feedHref]] },
       { title: '别处', links: [['GitHub', 'https://github.com/dull-bird'], ['给 AI 读', agentsHref]] },
     ]
   : [
-      { title: 'Site', links: [['Writing', writingHref], ['About · Now', aboutHref], ['Projects', projectsHref]] },
+      { title: 'Site', links: [['Writing', writingHref], ['Papers', papersHref], ['About · Now', aboutHref], ['Projects', projectsHref]] },
       { title: 'Follow', links: [['RSS', feedHref]] },
       { title: 'Elsewhere', links: [['GitHub', 'https://github.com/dull-bird'], ['For agents', agentsHref]] },
     ];

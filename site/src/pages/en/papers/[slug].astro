@@ -1,0 +1,66 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Prose from '../../../components/content/Prose.astro';
+import Callout from '../../../components/content/Callout.astro';
+import Tag from '../../../components/core/Tag.astro';
+import PostMeta from '../../../components/content/PostMeta.astro';
+import TextLink from '../../../components/core/TextLink.astro';
+import { getPapers } from '../../../lib/papers';
+import { routes, paperHref } from '../../../lib/routes';
+
+const lang = 'en';
+
+export async function getStaticPaths() {
+  const papers = await getPapers('en');
+  return papers.map((paper) => ({ params: { slug: paper.data.paperSlug }, props: { paper } }));
+}
+
+const { paper } = Astro.props as Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
+const { Content } = await render(paper);
+const r = routes(lang);
+
+const langHrefs = { zh: paperHref('zh', paper.data.paperSlug), en: paperHref('en', paper.data.paperSlug) };
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  headline: paper.data.title,
+  author: paper.data.authors.map((name) => ({ '@type': 'Person', name })),
+  datePublished: String(paper.data.year),
+  inLanguage: lang,
+  isPartOf: paper.data.venue,
+  url: new URL(paperHref(lang, paper.data.paperSlug), Astro.site).toString(),
+  identifier: paper.data.doi,
+};
+---
+
+<BaseLayout lang={lang} title={paper.data.shortTitle} description={paper.data.lede} activeNav="papers" langHrefs={langHrefs} jsonLd={jsonLd}>
+  <main class="db-reading" style="padding-top: var(--space-8); padding-bottom: var(--space-8);">
+    <TextLink muted href={r.papers} style="font-family: var(--font-mono); font-size: var(--text-sm);">← All papers</TextLink>
+
+    <header style="margin: var(--space-6) 0 var(--space-7);">
+      <div style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-4); flex-wrap:wrap;">
+        <Tag variant="accent">{paper.data.venue}</Tag>
+        <PostMeta date={paper.data.date} readingTime={paper.data.reading} lang={lang} items={[paper.data.authors.join(' · ')]} />
+      </div>
+      <h1 style="font-size: var(--text-3xl); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); margin-bottom: var(--space-4);">
+        {paper.data.shortTitle}
+      </h1>
+      <p style="font-family: var(--font-reading); font-size: var(--text-lg); color: var(--text-muted); line-height: var(--leading-snug); font-style: italic;">
+        {paper.data.lede}
+      </p>
+    </header>
+
+    <Prose lang={lang}>
+      <Content />
+    </Prose>
+
+    <Callout title="Paper and sources" style="margin: var(--space-8) 0;">
+      <ul>
+        {paper.data.links.map((link) => (
+          <li><a href={link.url}>{link.label}</a></li>
+        ))}
+      </ul>
+    </Callout>
+  </main>
+</BaseLayout>

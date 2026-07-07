@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Card from '../../../components/core/Card.astro';
+import Tag from '../../../components/core/Tag.astro';
+import PostMeta from '../../../components/content/PostMeta.astro';
+import { getPapers } from '../../../lib/papers';
+import { paperHref } from '../../../lib/routes';
+
+const lang = 'en';
+const papers = await getPapers(lang);
+---
+
+<BaseLayout lang={lang} title="Papers" activeNav="papers" description="My research papers, explained for non-specialists.">
+  <main class="db-reading" style="padding-top: var(--space-9); padding-bottom: var(--space-8);">
+    <div class="db-eyebrow" style="margin-bottom: var(--space-3);">Papers · 论文</div>
+    <h1 style="font-size: var(--text-3xl); letter-spacing: var(--tracking-tight); margin-bottom: var(--space-3);">Research in plain language</h1>
+    <p style="font-family: var(--font-reading); font-size: var(--text-md); color: var(--text-body); margin-bottom: var(--space-7);">
+      Two papers from my PhD years, written for readers who do not live inside quantitative finance.
+    </p>
+
+    <div style="display:flex; flex-direction:column; gap: var(--space-5);">
+      {papers.map((paper) => (
+        <Card href={paperHref(lang, paper.data.paperSlug)} style="display:flex; flex-direction:column; gap: var(--space-3);">
+          <div style="display:flex; align-items:center; gap: var(--space-3); flex-wrap:wrap;">
+            <Tag variant="accent">{paper.data.venue}</Tag>
+            <PostMeta date={paper.data.date} readingTime={paper.data.reading} lang={lang} items={[String(paper.data.year)]} />
+          </div>
+          <h2 style="font-size: var(--text-xl); line-height: var(--leading-snug);">{paper.data.shortTitle}</h2>
+          <p style="font-family: var(--font-reading); font-size: var(--text-base); color: var(--text-body); line-height: 1.6; margin: 0; max-width: 62ch;">
+            {paper.data.lede}
+          </p>
+        </Card>
+      ))}
+    </div>
+  </main>
+</BaseLayout>

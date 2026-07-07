@@ -9,7 +9,7 @@ interface Props {
   lang: Lang;
   title: string;
   description?: string;
-  activeNav?: 'writing' | 'about' | 'projects' | 'agents';
+  activeNav?: 'writing' | 'papers' | 'about' | 'projects' | 'agents';
   /** Override the language-toggle targets, e.g. an article's sibling slug. */
   langHrefs?: { zh: string; en: string };
   jsonLd?: Record<string, unknown>;
@@ -19,14 +19,15 @@ const { lang, title, description, activeNav, langHrefs, jsonLd } = Astro.props;
 const otherLang: Lang = lang === 'zh' ? 'en' : 'zh';
 const r = routes(lang);
 
-const navKey = (activeNav ?? 'home') as 'writing' | 'about' | 'projects' | 'agents' | 'home';
+const navKey = (activeNav ?? 'home') as 'writing' | 'papers' | 'about' | 'projects' | 'agents' | 'home';
 const resolvedLangHrefs = langHrefs ?? {
   [lang]: Astro.url.pathname,
   [otherLang]: routes(otherLang)[navKey],
 } as { zh: string; en: string };
 
-const navLabels: Array<{ key: 'writing' | 'about' | 'projects' | 'agents'; zh: string; en: string }> = [
+const navLabels: Array<{ key: 'writing' | 'papers' | 'about' | 'projects' | 'agents'; zh: string; en: string }> = [
   { key: 'writing', zh: '文章', en: 'Writing' },
+  { key: 'papers', zh: '论文', en: 'Papers' },
   { key: 'about', zh: '关于', en: 'About' },
   { key: 'projects', zh: '项目', en: 'Projects' },
   { key: 'agents', zh: '给 AI', en: 'For AI' },
@@ -77,6 +78,7 @@ const fullTitle = title ? `${title} · ${siteTitle}` : siteTitle;
   <SiteFooter
     lang={lang}
     writingHref={r.writing}
+    papersHref={r.papers}
     aboutHref={r.about}
     projectsHref={r.projects}
     agentsHref={r.agents}

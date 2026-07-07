@@ -8,10 +8,12 @@ import PostMeta from '../components/content/PostMeta.astro';
 import TextLink from '../components/core/TextLink.astro';
 import { profile } from '../data/site';
 import { getPosts } from '../lib/posts';
-import { routes, postHref } from '../lib/routes';
+import { getPapers } from '../lib/papers';
+import { routes, postHref, paperHref } from '../lib/routes';
 
 const lang = 'zh';
 const posts = (await getPosts(lang)).slice(0, 3);
+const papers = (await getPapers(lang)).slice(0, 2);
 const r = routes(lang);
 
 const jsonLd = {
@@ -38,12 +40,34 @@ const jsonLd = {
           </p>
           <div style="display:flex; gap: var(--space-3); flex-wrap:wrap;">
             <Button href={r.writing}>读一读</Button>
+            <Button variant="secondary" href={r.papers}>看论文</Button>
             <Button variant="secondary" href={r.about}>关于我</Button>
           </div>
         </div>
         <div style="flex: 0 0 auto; margin: 0 auto;">
           <BirdMark variant="line" size={260} strokeWidth={4} color="var(--accent)" animate />
         </div>
+      </div>
+    </section>
+
+    <section class="db-container" style="padding-bottom: var(--space-9);">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--text-2xl);">论文解读</h2>
+        <TextLink muted href={r.papers}>全部论文 →</TextLink>
+      </div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-5);">
+        {papers.map((paper) => (
+          <Card href={paperHref(lang, paper.data.paperSlug)} style="display:flex; flex-direction:column; gap: var(--space-3);">
+            <Tag variant="accent">{paper.data.venue}</Tag>
+            <h3 style="font-size: var(--text-xl); line-height: var(--leading-snug);">{paper.data.shortTitle}</h3>
+            <p style="font-family: var(--font-reading); color: var(--text-body); font-size: var(--text-base); line-height: 1.6; margin: 0;">
+              {paper.data.lede}
+            </p>
+            <div style="margin-top:auto; padding-top: var(--space-3);">
+              <PostMeta date={paper.data.date} readingTime={paper.data.reading} lang={lang} items={[String(paper.data.year)]} />
+            </div>
+          </Card>
+        ))}
       </div>
     </section>
 
