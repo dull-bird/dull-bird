@@ -6,7 +6,7 @@ shortTitle: Deep learning for enhanced index tracking
 venue: Quantitative Finance
 date: 2024-06-07
 year: 2024
-reading: 13
+reading: 14
 translated: true
 lede: How can a fund stay close to an index, try to earn a little extra return, and still respect risk and trading costs? This paper turns that tension into a dynamic decision problem.
 authors:
@@ -73,6 +73,15 @@ L_{\mathrm{TE}}
 $$
 
 The first term should be small: the portfolio should remain close to the index. The second term has a minus sign: higher excess return lowers the loss. The parameter $\lambda$ controls how much tracking error the model may tolerate in exchange for extra return.
+
+You can read $\lambda$ as a knob. When $\lambda=0$, the model only tries to track the index. As $\lambda$ becomes larger, the model becomes more willing to deviate from the index in exchange for excess return. In the paper's EIT experiments, we use $\lambda=20$. The number looks large because daily tracking error is around the $10^{-3}$ scale while daily excess return is around the $10^{-4}$ scale, so the two terms are not naturally on the same magnitude.
+
+<figure>
+  <img src="/assets/papers/original/eit-large-lambda-wealth-comparison.jpg" alt="Original paper figure: wealth paths in the enhanced index tracking experiment with lambda equal to 20" />
+  <figcaption>Original figure extracted from the paper PDF, Figure 5(b). This is the EIT setting with λ=20. The model puts much more weight on excess return: NN-ISR and NN-All rise far above the index, but the price is larger benchmark deviation and deeper downside risk.</figcaption>
+</figure>
+
+So $\lambda$ is not simply "the larger the better." A larger $\lambda$ rewards excess return more strongly, but without CVaR or another risk constraint the learned allocation can become aggressive. The later CVaR version is meant to keep that return-seeking behavior inside a risk-controlled boundary.
 
 ## Constraints from real trading
 
@@ -208,7 +217,7 @@ The paper tests the method on S&P 500, S&P 100, FTSE 100, and Nikkei 225 setting
 
 The most intuitive result appears around the 2020 market crash. The model shifts toward safer allocations, including cash-like exposure, instead of blindly staying aggressive. In other words, the value is not only "earning more"; it is also avoiding large mistakes in stressed regimes.
 
-The result should not be read as "deep learning guarantees alpha." The excess return is modest, and the Nikkei 225 experiments are a useful warning: if the selected large-cap stocks themselves lag the index, the model cannot manufacture excess return from nowhere.
+The result should not be read as "deep learning guarantees alpha." With a larger $\lambda$, the model does pursue excess return more aggressively and the wealth curve can look much better, but tracking error, CVaR, and maximum drawdown can also deteriorate. Adding CVaR sacrifices some return for better risk control. The Nikkei 225 experiments are also a useful warning: if the selected large-cap stocks themselves lag the index, the model cannot manufacture excess return from nowhere.
 
 ## Why it matters beyond finance
 
