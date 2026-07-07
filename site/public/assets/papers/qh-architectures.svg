@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520" role="img" aria-labelledby="title desc">
+  <title id="title">Three neural network architectures for quadratic hedging</title>
+  <desc id="desc">A redrawn schematic comparing Multi-net, Single-net, and RNN approaches to dynamic hedging.</desc>
+  <defs>
+    <style>
+      .bg{fill:#fbfaf7}.lane{fill:#fff;stroke:#d6d1c4;stroke-width:2}.node{fill:#f2f0ea;stroke:#d6d1c4;stroke-width:2}.accent{fill:#8a5a2b}.line{stroke:#8a5a2b;stroke-width:3;fill:none;marker-end:url(#arrow)}.title{font:700 24px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1a18}.label{font:700 17px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1a18}.small{font:14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#4a4742}.tiny{font:12px system-ui,-apple-system,Segoe UI,sans-serif;fill:#6f675d}.white{fill:#fbfaf7;font:700 16px system-ui,-apple-system,Segoe UI,sans-serif}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a5a2b"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="980" height="520" rx="28"/>
+  <text class="title" x="52" y="58">Quadratic hedging: three approximators</text>
+  <text class="tiny" x="52" y="84">Redrawn from the benchmark comparison: parameter-heavy independence, shared time-aware function, and memory-based state inference.</text>
+
+  <rect class="lane" x="52" y="116" width="876" height="100" rx="18"/>
+  <text class="label" x="80" y="150">Multi-net</text>
+  <text class="small" x="80" y="178">q<tspan baseline-shift="sub">t</tspan> = f<tspan baseline-shift="sub">t</tspan>(X<tspan baseline-shift="sub">t</tspan>; θ<tspan baseline-shift="sub">t</tspan>)</text>
+  <rect class="node" x="320" y="140" width="86" height="44" rx="12"/><text class="small" x="345" y="168">FNN1</text>
+  <rect class="node" x="442" y="140" width="86" height="44" rx="12"/><text class="small" x="467" y="168">FNN2</text>
+  <rect class="node" x="564" y="140" width="86" height="44" rx="12"/><text class="small" x="590" y="168">...</text>
+  <rect class="node" x="686" y="140" width="86" height="44" rx="12"/><text class="small" x="708" y="168">FNNT</text>
+
+  <rect class="lane" x="52" y="238" width="876" height="100" rx="18"/>
+  <text class="label" x="80" y="272">Single-net</text>
+  <text class="small" x="80" y="300">q<tspan baseline-shift="sub">t</tspan> = f(X<tspan baseline-shift="sub">t</tspan>, t/T; θ)</text>
+  <rect class="node" x="398" y="262" width="188" height="44" rx="12"/><text class="small" x="433" y="290">shared FNN + time</text>
+  <path class="line" d="M586 284 L700 284"/>
+  <rect class="accent" x="714" y="262" width="90" height="44" rx="12"/><text class="white" x="741" y="290">q<tspan baseline-shift="sub">t</tspan></text>
+
+  <rect class="lane" x="52" y="360" width="876" height="100" rx="18"/>
+  <text class="label" x="80" y="394">RNN</text>
+  <text class="small" x="80" y="422">z<tspan baseline-shift="sub">t</tspan> = GRU(ξ<tspan baseline-shift="sub">t</tspan>, z<tspan baseline-shift="sub">t-1</tspan>), q<tspan baseline-shift="sub">t</tspan> = control(z<tspan baseline-shift="sub">t</tspan>, X<tspan baseline-shift="sub">t</tspan>)</text>
+  <rect class="node" x="386" y="384" width="96" height="44" rx="12"/><text class="small" x="417" y="412">GRU</text>
+  <path class="line" d="M482 406 L572 406"/>
+  <rect class="node" x="586" y="384" width="124" height="44" rx="12"/><text class="small" x="612" y="412">ControlNet</text>
+  <path class="line" d="M710 406 L790 406"/>
+  <rect class="accent" x="804" y="384" width="90" height="44" rx="12"/><text class="white" x="831" y="412">q<tspan baseline-shift="sub">t</tspan></text>
+</svg>

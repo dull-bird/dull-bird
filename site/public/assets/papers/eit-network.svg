@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520" role="img" aria-labelledby="title desc">
+  <title id="title">Enhanced index tracking network architecture</title>
+  <desc id="desc">A redrawn schematic of the four-block architecture: regime, score, gate, memory, and final portfolio weights.</desc>
+  <defs>
+    <style>
+      .bg{fill:#fbfaf7}.card{fill:#fff;stroke:#d6d1c4;stroke-width:2}.soft{fill:#f2f0ea;stroke:#d6d1c4;stroke-width:2}.accent{fill:#8a5a2b}.line{stroke:#8a5a2b;stroke-width:3;fill:none;marker-end:url(#arrow)}.muted{fill:#6f675d}.title{font:700 24px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1a18}.label{font:600 17px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1a18}.small{font:14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#4a4742}.tiny{font:12px system-ui,-apple-system,Segoe UI,sans-serif;fill:#6f675d}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a5a2b"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="980" height="520" rx="28"/>
+  <text class="title" x="52" y="58">Enhanced index tracking: four interpretable blocks</text>
+  <text class="tiny" x="52" y="84">Redrawn from the paper's architecture: long-run regimes + short-run scores + risk gate + turnover memory.</text>
+
+  <rect class="soft" x="52" y="132" width="180" height="94" rx="16"/>
+  <text class="label" x="82" y="164">Features</text>
+  <text class="small" x="82" y="190">regime p<tspan baseline-shift="sub">I,t</tspan></text>
+  <text class="small" x="82" y="211">returns · beta · w<tspan baseline-shift="sub">t</tspan></text>
+
+  <rect class="card" x="310" y="102" width="198" height="86" rx="16"/>
+  <text class="label" x="345" y="135">Main block</text>
+  <text class="small" x="334" y="162">bull / bear base weights</text>
+
+  <rect class="card" x="310" y="214" width="198" height="86" rx="16"/>
+  <text class="label" x="346" y="247">Score block</text>
+  <text class="small" x="333" y="274">shared short-term scorer</text>
+
+  <rect class="card" x="580" y="132" width="188" height="86" rx="16"/>
+  <text class="label" x="630" y="165">Gate</text>
+  <text class="small" x="608" y="192">risk exposure shrinker</text>
+
+  <rect class="card" x="580" y="278" width="188" height="86" rx="16"/>
+  <text class="label" x="620" y="311">Memory</text>
+  <text class="small" x="608" y="338">turnover-aware smoothing</text>
+
+  <rect class="soft" x="828" y="202" width="110" height="110" rx="55"/>
+  <text class="label" x="850" y="246">Final</text>
+  <text class="label" x="846" y="271">weights</text>
+  <text class="small" x="856" y="294">w~<tspan baseline-shift="sub">S,t</tspan></text>
+
+  <path class="line" d="M232 162 C258 154 276 148 310 145"/>
+  <path class="line" d="M232 190 C260 220 278 245 310 256"/>
+  <path class="line" d="M508 145 C540 145 550 153 580 165"/>
+  <path class="line" d="M508 256 C548 246 552 205 580 185"/>
+  <path class="line" d="M674 218 L674 278"/>
+  <path class="line" d="M768 175 C800 186 812 214 828 242"/>
+  <path class="line" d="M768 321 C802 310 814 288 828 270"/>
+
+  <rect class="accent" x="364" y="398" width="252" height="48" rx="24"/>
+  <text x="392" y="428" style="font:600 17px system-ui,-apple-system,Segoe UI,sans-serif;fill:#fbfaf7">cost-aware dynamic policy</text>
+  <path class="line" d="M490 398 C490 370 578 348 580 326"/>
+</svg>

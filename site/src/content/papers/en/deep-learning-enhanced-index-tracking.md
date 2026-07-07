@@ -6,7 +6,7 @@ shortTitle: Deep learning for enhanced index tracking
 venue: Quantitative Finance
 date: 2024-06-07
 year: 2024
-reading: 9
+reading: 13
 translated: true
 lede: How can a fund stay close to an index, try to earn a little extra return, and still respect risk and trading costs? This paper turns that tension into a dynamic decision problem.
 authors:
@@ -23,6 +23,8 @@ links:
     url: https://doi.org/10.1080/14697688.2024.2356239
   - label: Publisher page
     url: https://www.tandfonline.com/doi/full/10.1080/14697688.2024.2356239
+  - label: SSRN preprint
+    url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4461741
 ---
 
 ## In plain language
@@ -33,30 +35,152 @@ That is harder than it sounds. Extra return usually requires deviating from the 
 
 This paper asks whether a deep learning model can learn a dynamic rebalancing rule that balances all of these goals at once.
 
-## The problem
+<figure>
+  <img src="/assets/papers/eit-loss.svg" alt="Enhanced index tracking loss components: tracking error, excess return, CVaR penalty, and trading cost" />
+  <figcaption>Enhanced index tracking is not a single-objective problem. This redrawn figure shows the four tensions behind the training objective.</figcaption>
+</figure>
 
-The target is enhanced index tracking. The model has to:
+## The loss function
 
-- keep the portfolio close to the benchmark index;
-- seek excess return over the index;
-- control downside risk, measured through CVaR-style constraints;
-- reduce unnecessary turnover, because trading is not free.
+Let $r_{I,t}$ be the index return and $r_{P,t}$ be the portfolio return. Plain index tracking focuses on tracking error:
 
-This is not a one-shot stock-picking problem. It is a repeated control problem: every period, the model observes market features and the current portfolio, then decides how much to rebalance.
+$$
+L_{\mathrm{TE}}
+=
+\sqrt{
+  \frac{1}{T}\sum_{t=1}^{T}
+  (r_{P,t}-r_{I,t})^2
+}.
+$$
 
-## The method
+Enhanced index tracking also tries to produce positive average excess return:
+
+$$
+L_{\mathrm{ER}}
+=
+\frac{1}{T}\sum_{t=1}^{T}(r_{P,t}-r_{I,t}).
+$$
+
+The basic objective is therefore:
+
+$$
+L_{\mathrm{EIT}}
+=
+L_{\mathrm{TE}}
+-
+\lambda L_{\mathrm{ER}},
+\qquad \lambda \ge 0.
+$$
+
+The first term should be small: the portfolio should remain close to the index. The second term has a minus sign: higher excess return lowers the loss. The parameter $\lambda$ controls how much tracking error the model may tolerate in exchange for extra return.
+
+## Constraints from real trading
+
+The portfolio contains $n$ stocks plus cash. Let $\boldsymbol w_t$ be the pre-trade weights and $\tilde{\boldsymbol w}_t$ be the post-trade weights. With proportional transaction cost $\rho$, the budget constraint is:
+
+$$
+1-\rho\sum_{i=1}^{n}
+\left|\tilde w_{i,t}-w_{i,t}\right|
+=
+\sum_{i=0}^{n}\tilde w_{i,t}.
+$$
+
+The next-period portfolio return is:
+
+$$
+r_{P,t+1}
+=
+\sum_{i=0}^{n}\tilde w_{i,t} r_{i,t+1}
+-
+\rho\sum_{i=1}^{n}
+\left|\tilde w_{i,t}-w_{i,t}\right|.
+$$
+
+This is why the model needs memory: if the new allocation is far from the current allocation, the cost appears directly in realized return.
+
+The paper also adds a downside-risk constraint through CVaR. To make the penalty differentiable, it uses a softplus approximation:
+
+$$
+g_\beta(x)
+=
+\frac{\log(1+\exp(\beta x))}{\beta}.
+$$
+
+When CVaR exceeds a threshold $c$, the penalty is:
+
+$$
+P_{\mathrm{CVaR}}
+=
+\gamma\,
+g_\beta\left(
+  \mathrm{CVaR}_\alpha(r_{P,t}) - c
+\right).
+$$
+
+The final objective becomes:
+
+$$
+L_{\mathrm{EIT-CVaR}}
+=
+L_{\mathrm{TE}}
+-
+\lambda L_{\mathrm{ER}}
++
+P_{\mathrm{CVaR}}.
+$$
+
+In nontechnical terms, every rebalance pays four bills: benchmark deviation, missed excess return, tail risk, and turnover.
+
+## The four-block architecture
 
 The network is intentionally structured, not just made large.
 
-**The main block** looks at long-run market regimes, such as bull and bear states, and learns different baseline allocations for them.
+<figure>
+  <img src="/assets/papers/eit-network.svg" alt="Four-block enhanced index tracking network: main, score, gate, and memory" />
+  <figcaption>A redrawn schematic of the paper's architecture. The main block handles regimes, the score block handles short-term stock signals, the gate block shrinks risky exposure, and the memory block controls turnover.</figcaption>
+</figure>
 
-**The score block** reads short-term stock features such as recent return, volatility, and beta, then scores which stocks deserve more weight.
+**The main block** learns bull and bear base allocations and mixes them using the index regime probability:
 
-**The gate block** reduces exposure when a stock or the market looks riskier.
+$$
+\tilde{\boldsymbol w}_{1,t}
+=
+\omega_{\mathrm{bull},t}\tilde{\boldsymbol w}_{\mathrm{bull}}
++
+(1-\omega_{\mathrm{bull},t})\tilde{\boldsymbol w}_{\mathrm{bear}}.
+$$
 
-**The memory block** looks at the current allocation and discourages unnecessary changes, which helps control transaction costs.
+**The score block** reads short-term stock features, produces a short-term allocation $\tilde{\boldsymbol w}_{\mathrm{sc},t}$, and mixes it with the long-run allocation:
 
-The key idea is that the architecture mirrors the finance problem: long-run state, short-run opportunity, risk gating, and cost-aware memory.
+$$
+\tilde{\boldsymbol w}_{2,t}
+=
+(1-\omega_1)\tilde{\boldsymbol w}_{\mathrm{sc},t}
++
+\omega_1 \tilde{\boldsymbol w}_{1,t}.
+$$
+
+**The gate block** reduces exposure when a stock or regime looks riskier:
+
+$$
+\tilde{\boldsymbol w}_{3,t}
+=
+\tilde{\boldsymbol g}_t
+\circ
+\tilde{\boldsymbol w}_{2,t}.
+$$
+
+**The memory block** smooths rebalancing by mixing the proposed allocation with the current one:
+
+$$
+\tilde{\boldsymbol w}_{S,t}
+=
+(1-\omega_{p,t})\tilde{\boldsymbol w}_{3,t}
++
+\omega_{p,t}\boldsymbol w_{S,t}.
+$$
+
+The key design choice is not "make the network bigger." It is to split the financial problem into interpretable roles: long-run regime, short-run opportunity, risk gating, and cost-aware memory.
 
 ## What the results mean
 

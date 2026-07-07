@@ -187,7 +187,29 @@ a.db-card:hover, .db-card[data-interactive="true"]:hover {
 .db-prose code { font-family: var(--font-code); font-size: 0.88em; background: var(--surface-well); padding: 0.12em 0.42em; border-radius: var(--radius-xs); }
 .db-prose pre { background: var(--surface-well); border: 1px solid var(--border-hairline); padding: var(--space-5); border-radius: var(--radius-md); overflow: auto; line-height: var(--leading-normal); }
 .db-prose pre code { background: none; padding: 0; }
-.db-prose img { border-radius: var(--radius-md); margin: 1.6em 0; }
+.db-prose img { max-width: 100%; height: auto; border-radius: var(--radius-md); margin: 0; }
+.db-prose figure {
+  margin: 2em 0;
+  padding: var(--space-4);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface-card);
+}
+.db-prose figcaption {
+  margin-top: var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+.db-prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em 0;
+}
+.db-prose .katex {
+  font-size: 1.02em;
+}
 .db-prose hr { border: none; border-top: 1px solid var(--border-hairline); margin: 2.4em 0; }
 
 /* ---------------- Site header ---------------- */

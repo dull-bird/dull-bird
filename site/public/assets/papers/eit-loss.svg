@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 460" role="img" aria-labelledby="title desc">
+  <title id="title">Enhanced index tracking loss decomposition</title>
+  <desc id="desc">A redrawn diagram showing tracking error, excess return, CVaR penalty, and transaction cost as components of the training objective.</desc>
+  <defs>
+    <style>
+      .bg{fill:#fbfaf7}.box{fill:#fff;stroke:#d6d1c4;stroke-width:2}.loss{fill:#8a5a2b}.line{stroke:#8a5a2b;stroke-width:3;fill:none;marker-end:url(#arrow)}.title{font:700 24px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1a18}.label{font:600 17px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1a18}.math{font:16px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#4a4742}.white{font:700 20px system-ui,-apple-system,Segoe UI,sans-serif;fill:#fbfaf7}.tiny{font:12px system-ui,-apple-system,Segoe UI,sans-serif;fill:#6f675d}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a5a2b"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="980" height="460" rx="28"/>
+  <text class="title" x="52" y="58">What the EIT model optimizes</text>
+  <text class="tiny" x="52" y="84">The network is trained by balancing benchmark closeness, extra return, tail risk, and trading frictions.</text>
+
+  <rect class="box" x="68" y="132" width="210" height="98" rx="18"/>
+  <text class="label" x="103" y="165">Tracking error</text>
+  <text class="math" x="94" y="196">sqrt(mean((rP-rI)^2))</text>
+
+  <rect class="box" x="68" y="270" width="210" height="98" rx="18"/>
+  <text class="label" x="104" y="303">Excess return</text>
+  <text class="math" x="114" y="334">mean(rP-rI)</text>
+
+  <rect class="box" x="386" y="132" width="210" height="98" rx="18"/>
+  <text class="label" x="440" y="165">CVaR penalty</text>
+  <text class="math" x="428" y="196">softplus(CVaR-c)</text>
+
+  <rect class="box" x="386" y="270" width="210" height="98" rx="18"/>
+  <text class="label" x="432" y="303">Trading cost</text>
+  <text class="math" x="420" y="334">rho · turnover</text>
+
+  <rect class="loss" x="708" y="178" width="220" height="112" rx="26"/>
+  <text class="white" x="755" y="221">Training loss</text>
+  <text x="733" y="255" style="font:16px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#fbfaf7">LTE - λ LER + penalty</text>
+
+  <path class="line" d="M278 181 C336 181 335 181 386 181"/>
+  <path class="line" d="M596 181 C650 185 666 200 708 220"/>
+  <path class="line" d="M278 319 C336 319 335 319 386 319"/>
+  <path class="line" d="M596 319 C650 306 666 282 708 254"/>
+</svg>

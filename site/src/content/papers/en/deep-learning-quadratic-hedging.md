@@ -6,7 +6,7 @@ shortTitle: Which neural network works best for quadratic hedging?
 venue: The Journal of Derivatives
 date: 2022-09-01
 year: 2022
-reading: 10
+reading: 14
 translated: true
 lede: "This is a benchmark paper rather than a new hedging trick: it compares Multi-net, Single-net, and RNN architectures for dynamic hedging across high-dimensional and long-horizon settings."
 authors:
@@ -37,15 +37,113 @@ Quadratic hedging has a simple goal: minimize the squared hedging error at matur
 
 This paper asks a practical question: if we use neural networks to learn a dynamic hedging strategy, which architecture should we trust?
 
+<figure>
+  <img src="/assets/papers/qh-loss-grid.svg" alt="Quadratic hedging benchmark design over asset dimension, maturity, market model, and architecture" />
+  <figcaption>The paper is a benchmark. It varies dimensionality, horizon, market dynamics, and neural architecture instead of relying on one easy case. This figure is redrawn from the experimental design.</figcaption>
+</figure>
+
+## The quadratic hedging loss
+
+Let there be $d$ underlying assets with price vector $\boldsymbol S_t\in\mathbb R^d$. The hedging position at time $t$ is $\boldsymbol q_t\in\mathbb R^d$, and the initial capital is $v$. Terminal hedging wealth is:
+
+$$
+V_T
+=
+v
++
+\sum_{t=0}^{T-1}
+\boldsymbol q_t^\top
+(\boldsymbol S_{t+1}-\boldsymbol S_t).
+$$
+
+The payoff used in the experiments is a European basket call:
+
+$$
+F_T
+=
+\left(
+  \sum_{j=1}^{d} S_{j,T}
+  -
+  dK
+\right)^+.
+$$
+
+Quadratic hedging minimizes the mean squared terminal hedging error:
+
+$$
+\min_{v,\boldsymbol q_0,\ldots,\boldsymbol q_{T-1}}
+\mathbb E
+\left[
+  (V_T-F_T)^2
+\right].
+$$
+
+If a neural network with parameters $\theta$ outputs each hedge, then:
+
+$$
+\boldsymbol q_t
+=
+f_\theta(X_t),
+$$
+
+where $X_t$ is the state observable at time $t$. Training uses sample average approximation:
+
+$$
+\widehat L(\theta)
+=
+\frac{1}{M}
+\sum_{m=1}^{M}
+\left(
+  v_\theta
+  +
+  \sum_{t=0}^{T-1}
+  f_\theta(X_t^{(m)})^\top
+  \Delta \boldsymbol S_{t+1}^{(m)}
+  -
+  F_T^{(m)}
+\right)^2.
+$$
+
+All architectures solve this same objective. The difference is how they represent $\boldsymbol q_t$.
+
 ## The three architectures
 
-The paper compares three choices.
+<figure>
+  <img src="/assets/papers/qh-architectures.svg" alt="Multi-net, Single-net, and RNN architectures for quadratic hedging" />
+  <figcaption>A redrawn schematic of the three neural approximators compared in the paper: independent networks per time step, one shared time-aware network, and an RNN with memory.</figcaption>
+</figure>
 
-**Multi-net** uses a separate neural network for each trading time. It is flexible, but its parameter count grows with the horizon. Longer maturity means more networks and a higher risk of overfitting.
+**Multi-net** uses a separate network for each time:
 
-**Single-net** uses one shared network and gives time as an input. It is like one trader who learns to adjust behavior depending on the date. It has far fewer parameters and trains faster.
+$$
+\boldsymbol q_t
+=
+f_t(X_t;\theta_t).
+$$
 
-**RNN** reads the history of returns. Its advantage is memory: it can infer hidden market state, such as changing volatility or correlations, from what happened recently.
+It is flexible, but its parameter count grows linearly with the horizon $T$. Longer maturity means more networks and a higher risk of overfitting.
+
+**Single-net** uses one shared network and gives normalized time as an input:
+
+$$
+\boldsymbol q_t
+=
+f(X_t,t/T;\theta).
+$$
+
+It is like one trader who learns to adjust behavior depending on the date. It has far fewer parameters and trains faster.
+
+**RNN** reads the history of returns. With log return $\boldsymbol\xi_t$ and hidden state $\boldsymbol z_t$:
+
+$$
+\boldsymbol z_t
+=
+\mathrm{GRU}(\boldsymbol\xi_t,\boldsymbol z_{t-1};\theta^R),
+\qquad
+\boldsymbol q_t
+=
+f^C(\boldsymbol z_t,\tilde X_t;\theta^C).
+$$
 
 For a non-specialist, Multi-net is many different traders, Single-net is one trader who knows the date, and RNN is one trader who remembers the path.
 
