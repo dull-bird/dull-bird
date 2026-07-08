@@ -27,21 +27,21 @@ links:
     url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4461741
 ---
 
-## Starting Point
+## The Problem
 
 Index-related funds include two related but different tasks. Index tracking minimizes tracking error relative to a benchmark. Enhanced index tracking tries to obtain excess return while controlling tracking error.
 
-This paper studies enhanced index tracking and treats ordinary index tracking as a special case. The portfolio trades index constituents and cash. The overall workflow has two steps: stock selection and weight allocation. For stock selection, the paper uses a transparent criterion: select large constituents of the S&P 500 by free-float market capitalization. The main research problem is the second step: how to dynamically allocate weights among selected stocks and cash.
+The article studies enhanced index tracking and treats ordinary index tracking as a special case. The portfolio trades index constituents and cash. The workflow has two steps: stock selection and weight allocation. For stock selection, the method uses a transparent criterion: select large constituents of the S&P 500 by free-float market capitalization. The main research problem is the second step, how to dynamically allocate weights among selected stocks and cash.
 
-Conventional weight allocation is usually formulated as a single-period optimization problem. It uses recent one- or two-year returns and periodically re-optimizes. The drawback is that such a policy may not catch up with regime switches. The paper therefore proposes a neural-network-generated dynamic rebalancing policy.
+Conventional weight allocation is usually formulated as a single-period optimization problem. It uses recent one- or two-year returns and periodically re-optimizes. The drawback is that such a policy may not catch up with regime switches. The proposed alternative is a neural-network-generated dynamic rebalancing policy.
 
 ## Why Not A Large Black Box
 
 The paper identifies three concerns for neural-network policies in this problem.
 
-First, real market data are limited compared with other deep learning domains, so overly sophisticated models can overfit. Second, scalability matters: directly feeding $O(n)$ stock features into a standard FNN creates a large network when the number of stocks grows. Third, an investment policy should have some interpretability.
+First, real market data are limited compared with other deep learning domains, so overly sophisticated models can overfit. Second, scalability matters: directly feeding $O(n)$ stock features into a standard FNN creates a large network when the number of stocks grows. Third, an investment policy needs some interpretability.
 
-The contribution is therefore not a larger network. The paper builds a small structured architecture with four blocks: main, score, gate, and memory. These blocks use different features, share parameters where possible, and incorporate transaction cost, no-short-selling, no-leverage, and CVaR control.
+The contribution is therefore not a larger network. It is a small structured architecture with four blocks: main, score, gate, and memory. These blocks use different features, share parameters where possible, and incorporate transaction cost, no-short-selling, no-leverage, and CVaR control.
 
 <figure>
   <img src="/assets/papers/eit-loss.svg" alt="Enhanced index tracking loss components: tracking error, excess return, CVaR penalty, and trading cost" />
@@ -297,14 +297,14 @@ The weakness of EIT is also clear: it does not directly control risk. All polici
 
 <figure>
   <img src="/assets/papers/original/eit-eit-weights-nn-isr.jpg" alt="Original paper figure: NN-ISR rebalanced weights under EIT" />
-  <figcaption>Original figure extracted from the paper PDF, Figure 7(c). Under EIT, NN-ISR concentrates in selected stocks and raises cash substantially during the 2020 crash. The presentation labels this behavior as flight to safety.</figcaption>
+  <figcaption>Original figure extracted from the paper PDF, Figure 7(c). Under EIT, NN-ISR concentrates in selected stocks and raises cash substantially during the 2020 crash. This is the flight-to-safety behavior discussed in the paper.</figcaption>
 </figure>
 
 ## EIT-CVaR: Lower Risk At A Return Cost
 
 After adding the CVaR constraint, all 95%-CVaR values are controlled below 3%. MDD also decreases relative to EIT, although it is not directly constrained.
 
-The cost is lower return. The presentation states it directly: the price for smaller risk is smaller returns. RO becomes overly conservative in EIT-CVaR, holding too much cash for too long and producing poor return performance. NN-IR and NN-ST are also conservative. NN-ISR and NN-All still perform well in MER, IR, Sharpe ratio, and CR.
+The cost is lower return: smaller risk is paid for with smaller returns. RO becomes overly conservative in EIT-CVaR, holding too much cash for too long and producing poor return performance. NN-IR and NN-ST are also conservative. NN-ISR and NN-All still perform well in MER, IR, Sharpe ratio, and CR.
 
 <figure>
   <img src="/assets/papers/original/eit-sp500-wealth-comparison.jpg" alt="Original paper figure: wealth paths for S&P 500 EIT-CVaR experiments" />
@@ -322,7 +322,7 @@ The rebalanced-weight figures are central to the paper's interpretation.
 
 For IT, policies tend to invest in stocks and cash more evenly and update weights slowly. The good performance of NN-ST is credited to the score block.
 
-For EIT and EIT-CVaR, policies tend to concentrate on selected stocks. The CVaR penalty leads to more diversification, but AAPL still receives a large weight under NN-ISR and NN-All. NN-ISR and NN-All show flexibility: they hold more high-return stocks in bull markets and more cash in bear markets. The rise in cash weight during the 2020 market meltdown is the flight-to-safety behavior emphasized in the presentation.
+For EIT and EIT-CVaR, policies tend to concentrate on selected stocks. The CVaR penalty leads to more diversification, but AAPL still receives a large weight under NN-ISR and NN-All. NN-ISR and NN-All show flexibility: they hold more high-return stocks in bull markets and more cash in bear markets. The rise in cash weight during the 2020 market meltdown is the flight-to-safety behavior emphasized by the paper.
 
 RO cannot fly to safety well in EIT. In EIT-CVaR, it can increase cash, but then remains heavily invested in cash long after the recovery. NN-IR uses only index regime and can also switch weights, but its flight to safety is less obvious than NN-ISR's. This shows why the gate block and stock regimes matter.
 
@@ -368,12 +368,12 @@ The Nikkei 225 case is a warning. Both NN-ISR and RO fail to generate excess CR 
 
 ## Conclusion
 
-Following the presentation's conclusion, the paper makes five claims.
+The paper's conclusion can be summarized in five points.
 
 First, it proposes a data-driven deep learning method for dynamic EIT rebalancing. Second, it introduces index and stock regimes as features and finds them key to investment performance. Third, it designs the architecture to be parsimonious, scalable, easy to train, and more interpretable. Fourth, empirical results verify the advantage over conventional RO. Fifth, the framework is flexible enough to incorporate additional features and constraints.
 
-## My Discussion
+## Notes
 
-My own interpretation belongs here, separate from the paper's claims. The paper is not about deep learning magically selecting stocks. Stock selection is still market-cap based. The innovation is in weight allocation: regime information, CVaR, transaction cost, and memory are built into a dynamic control framework.
+From a reader's point of view, the paper is not about deep learning magically selecting stocks. Stock selection is still market-cap based. The innovation is in weight allocation: regime information, CVaR, transaction cost, and memory are built into a dynamic control framework.
 
 The main reusable ideas are therefore regime-driven allocation, flight to safety in stressed markets, and transaction-cost-aware smoothing. The limitations are also explicit: regime identification is noisy in real time, market-cap stock selection depends on market environment, and excess return is not unconditional.

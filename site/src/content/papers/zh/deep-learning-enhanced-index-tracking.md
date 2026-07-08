@@ -27,25 +27,25 @@ links:
     url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4461741
 ---
 
-## 论文从哪里开始
+## 这篇论文要解决的问题
 
 指数相关基金可以分成两类。第一类是 index tracking，也就是尽量复制指数、最小化跟踪误差。第二类是 enhanced index tracking，也就是在控制跟踪误差的同时争取超额收益。
 
-这篇论文研究的是第二类问题，并把普通指数复制看作特殊情况。整个投资组合只交易指数成分股和现金，流程分两步：先选股，再做权重分配。论文在选股上采用传统且透明的准则：对 S&P 500 这类市值加权指数，按 free-float market capitalization 选择大盘成分股。真正要研究的是第二步，也就是这些股票和现金之间如何动态分配权重。
+这篇文章研究的是第二类问题，并把普通指数复制看作特殊情况。投资组合只交易指数成分股和现金，流程分两步：先选股，再做权重分配。选股采用传统且透明的准则：对 S&P 500 这类市值加权指数，按 free-float market capitalization 选择大盘成分股。真正要研究的是第二步，也就是这些股票和现金之间如何动态分配权重。
 
-传统做法通常把权重分配写成单期优化问题：拿最近一两年的收益数据，定期重新优化一次。这个方法直接、可解释，但有一个问题：市场 regime 切换时，它可能追不上状态变化。因此论文提出用神经网络生成动态再平衡策略。
+传统做法通常把权重分配写成单期优化问题：拿最近一两年的收益数据，定期重新优化一次。这个方法直接、可解释，但有一个问题：市场 regime 切换时，它可能追不上状态变化。因此这里改用神经网络生成动态再平衡策略。
 
 ## 为什么不是随便套一个大网络
 
-论文对 neural network policy 有三个顾虑。
+用 neural network policy 做这件事，有三个现实顾虑。
 
 第一，真实金融数据有限。和图像、语言任务相比，市场日频数据少得多，复杂网络很容易过拟合。第二，可扩展性很重要。如果把 $n$ 只股票的所有特征直接堆进标准 FNN，输入维度是 $O(n)$，股票数量一大网络就会变得很大。第三，金融投资需要一定可解释性，不能只是一个不知道为什么换仓的黑箱。
 
-所以论文的 contribution 不是“用更大的网络”，而是设计一个小而结构化的网络：main、score、gate、memory 四个 block 分别处理不同信息；score 和 gate 在股票之间共享参数；同时把交易成本、不做空、不加杠杆、CVaR 约束放进问题里。
+所以贡献不是“用更大的网络”，而是设计一个小而结构化的网络：main、score、gate、memory 四个 block 分别处理不同信息；score 和 gate 在股票之间共享参数；同时把交易成本、不做空、不加杠杆、CVaR 约束放进问题里。
 
 <figure>
   <img src="/assets/papers/eit-loss.svg" alt="增强指数跟踪训练目标由跟踪误差、超额收益、CVaR 惩罚和交易成本组成" />
-  <figcaption>根据论文逻辑重绘的示意图。论文不是只优化收益，而是把跟踪误差、超额收益、下行风险和交易成本一起放进动态再平衡框架。</figcaption>
+  <figcaption>根据论文逻辑重绘的示意图。这里不是只优化收益，而是把跟踪误差、超额收益、下行风险和交易成本一起放进动态再平衡框架。</figcaption>
 </figure>
 
 ## 控制变量和状态动态
@@ -211,7 +211,7 @@ $$
 
 ## 四块网络结构
 
-论文的 architecture 对应 PPT 里最核心的一页：main block、score block、gate block、memory block。
+网络结构由四个核心部分组成：main block、score block、gate block、memory block。
 
 <figure>
   <img src="/assets/papers/eit-network.svg" alt="增强指数跟踪四模块网络结构：main, score, gate, memory" />
@@ -297,14 +297,14 @@ NN-IR 和 NN-All 的收益表现也不错，NN-IR 在四个案例中的三个取
 
 <figure>
   <img src="/assets/papers/original/eit-eit-weights-nn-isr.jpg" alt="论文原图：EIT 中 NN-ISR 的再平衡权重" />
-  <figcaption>论文 PDF 原图，Figure 7(c)。EIT 下 NN-ISR 会高度集中到某些股票，也会在 2020 年市场下跌时显著提高现金权重。PPT 将这里标注为 flight to safety。</figcaption>
+  <figcaption>论文 PDF 原图，Figure 7(c)。EIT 下 NN-ISR 会高度集中到某些股票，也会在 2020 年市场下跌时显著提高现金权重；这就是文中讨论的 flight to safety。</figcaption>
 </figure>
 
 ## EIT-CVaR 结果：用部分收益换风险控制
 
 加入 CVaR 约束后，所有策略的 95%-CVaR 都控制在 3% 以下。MDD 也比 EIT 明显下降，虽然 MDD 并没有被直接放进约束。
 
-代价是收益降低。论文的表述很直接：price for smaller risk is smaller returns。RO 在 EIT-CVaR 中变得过度保守，长期持有较多现金，导致收益表现差。NN-IR 和 NN-ST 也偏保守，跟踪误差较小但收益也较低。NN-ISR 和 NN-All 则仍然在 MER、IR、Sharpe ratio 和 CR 上表现较好。
+代价是收益降低。换句话说，更小的风险是用更低的收益换来的。RO 在 EIT-CVaR 中变得过度保守，长期持有较多现金，导致收益表现差。NN-IR 和 NN-ST 也偏保守，跟踪误差较小但收益也较低。NN-ISR 和 NN-All 则仍然在 MER、IR、Sharpe ratio 和 CR 上表现较好。
 
 <figure>
   <img src="/assets/papers/original/eit-sp500-wealth-comparison.jpg" alt="论文原图：S&P 500 EIT-CVaR 实验中不同策略的财富路径对比" />
@@ -322,7 +322,7 @@ NN-IR 和 NN-All 的收益表现也不错，NN-IR 在四个案例中的三个取
 
 IT 中，各策略通常较均匀地配置股票和现金，并且权重变化较慢。NN-ST 表现好，主要来自 score block 对短期特征的使用。
 
-EIT 和 EIT-CVaR 中，策略会更集中于某些股票；加入 CVaR 后会更分散，但 AAPL 在 NN-ISR 和 NN-All 中仍然占较大权重。NN-ISR 和 NN-All 的特点是灵活：牛市中更多持有高收益股票，熊市中减少股票并增加现金。2020 年市场下跌时，这种 cash weight 的上升就是 PPT 里强调的 flight to safety。
+EIT 和 EIT-CVaR 中，策略会更集中于某些股票；加入 CVaR 后会更分散，但 AAPL 在 NN-ISR 和 NN-All 中仍然占较大权重。NN-ISR 和 NN-All 的特点是灵活：牛市中更多持有高收益股票，熊市中减少股票并增加现金。2020 年市场下跌时，cash weight 的明显上升就是 flight to safety。
 
 RO 在 EIT 中不能很好地 flight to safety；在 EIT-CVaR 中可以提高现金，但恢复后长时间重仓现金，因而过度保守。NN-IR 只用 index regime，也能随市场 regime 切换调整权重，但 flight to safety 不如 NN-ISR 明显。这说明 gate block 中的 stock regime 信息很重要。
 
@@ -368,12 +368,12 @@ Nikkei 225 是一个重要反例。NN-ISR 和 RO 都没有产生相对指数的 
 
 ## 论文结论
 
-论文的结论可以按 PPT 的最后一页来概括。
+这篇论文的结论可以归纳为五点。
 
 第一，提出了一个 data-driven deep learning method，用于 EIT 的动态再平衡。第二，引入 index regime 和 stock regime 作为特征，并发现它们对提升 EIT 投资表现很关键。第三，网络结构被设计成 parsimonious、scalable、easy to train，并且有更好的 interpretability。第四，实证结果验证了该方法相对 conventional RO method 的优势。第五，框架本身是 flexible 的，可以继续加入更多特征和约束。
 
-## 我的讨论
+## 几点补充
 
-我自己的理解放在这里，而不是混进论文结论里。文章最核心的线索是：这不是“深度学习魔法选股”，而是一个结构化动态控制框架。选股仍然采用市值准则；真正的创新在于权重分配里显式利用 regime、CVaR 和交易成本。
+站在读者角度，我会把这篇文章理解为一个结构化动态控制框架，而不是“深度学习魔法选股”。选股仍然采用市值准则；真正的创新在于权重分配里显式利用 regime、CVaR 和交易成本。
 
 因此它的优势主要来自两点：一是 regime-driven 的动态调仓，尤其是 2020 年那种 flight to safety；二是 memory block 对交易成本的控制。它也有清楚的边界：regime 实时识别有噪声，按市值选股依赖市场环境，超额收益不是无条件保证。
